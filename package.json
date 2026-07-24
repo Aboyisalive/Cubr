@@ -1,0 +1,9 @@
+{
+  "name": "cubr",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo for cubr — a full-featured Rubik's Cube companion (Android + Web + Go backend).",
+  "workspaces": [
+    "web"
+  ]
+}

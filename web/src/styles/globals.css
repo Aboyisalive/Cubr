@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   SEMANTIC TOKENS — Section 2
+   Channels stored as "R G B" so Tailwind can apply <alpha-value>.
+   Light mode is the :root default; [data-theme="dark"] overrides.
+   Light and dark are supported equally — neither is primary.
+   ============================================================ */
+:root,
+:root[data-theme="light"] {
+  --bg-default: 255 255 255; /* neutral/0 */
+  --bg-subtle: 247 247 248; /* neutral/50 */
+
+  --surface-default: 255 255 255; /* neutral/0 */
+  --surface-raised: 247 247 248; /* neutral/50 */
+  --surface-sunken: 237 238 240; /* neutral/100 */
+
+  --text-primary: 24 25 28; /* neutral/900 */
+  --text-secondary: 84 86 95; /* neutral/600 */
+  --text-tertiary: 154 157 168; /* neutral/400 */
+  --text-on-brand: 255 255 255; /* neutral/0 */
+  --text-inverse: 255 255 255; /* neutral/0 */
+
+  --border-default: 220 221 226; /* neutral/200 */
+  --border-subtle: 237 238 240; /* neutral/100 */
+  --border-strong: 154 157 168; /* neutral/400 */
+
+  --brand-default: 255 107 15; /* orange/500 */
+  --brand-hover: 242 87 0; /* orange/600 */
+  --brand-subtle: 255 244 237; /* orange/50 */
+}
+
+:root[data-theme="dark"] {
+  --bg-default: 13 14 16; /* neutral/950 */
+  --bg-subtle: 24 25 28; /* neutral/900 */
+
+  --surface-default: 24 25 28; /* neutral/900 */
+  --surface-raised: 38 39 44; /* neutral/800 */
+  --surface-sunken: 13 14 16; /* neutral/950 */
+
+  --text-primary: 247 247 248; /* neutral/50 */
+  --text-secondary: 194 196 203; /* neutral/300 */
+  --text-tertiary: 113 116 126; /* neutral/500 */
+  --text-on-brand: 255 255 255; /* neutral/0 */
+  --text-inverse: 24 25 28; /* neutral/900 */
+
+  --border-default: 60 62 69; /* neutral/700 */
+  --border-subtle: 38 39 44; /* neutral/800 */
+  --border-strong: 113 116 126; /* neutral/500 */
+
+  --brand-default: 255 133 51; /* orange/400 */
+  --brand-hover: 255 163 102; /* orange/300 */
+  --brand-subtle: 122 43 0; /* orange/900 */
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg-default text-text-primary font-body antialiased;
+  }
+
+  ::selection {
+    background: rgb(var(--brand-default) / 0.28);
+  }
+
+  /* Focus-visible ring bound to brand — a single accessible affordance. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--brand-default));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* ---- Type styles (Section 3). Color is intentionally NOT set here —
+     text fills are applied explicitly at the call site, per the brief note. ---- */
+  .type-display-lg { @apply font-display text-display-lg; }
+  .type-display-sm { @apply font-display text-display-sm; }
+  .type-heading-lg { @apply font-display text-heading-lg; }
+  .type-heading-md { @apply font-display text-heading-md; }
+  .type-heading-sm { @apply font-display text-heading-sm; }
+  .type-body-lg { @apply font-body text-body-lg; }
+  .type-body-md { @apply font-body text-body-md; }
+  .type-body-sm { @apply font-body text-body-sm; }
+  .type-label-lg { @apply font-body text-label-lg; }
+  .type-label-md { @apply font-body text-label-md; }
+  .type-caption { @apply font-body text-caption uppercase; }
+}
+
+@layer utilities {
+  /* Hide scrollbars on horizontal shelves while keeping scroll behaviour. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

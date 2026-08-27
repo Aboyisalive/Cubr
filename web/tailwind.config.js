@@ -9,7 +9,7 @@ export default {
   darkMode: ['selector', '[data-theme="dark"]'],
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
-    // --- Spacing (4px base unit, Section 4) ---
+    // --- Spacing (4px base unit) ---
     spacing: {
       0: "0px",
       1: "4px",
@@ -25,7 +25,7 @@ export default {
       20: "80px",
       24: "96px",
     },
-    // --- Corner radius (Section 4) ---
+    // --- Corner radius ---
     borderRadius: {
       none: "0px",
       sm: "4px",
@@ -37,7 +37,7 @@ export default {
     },
     extend: {
       colors: {
-        // ---- PRIMITIVES (raw values, Section 2) ----
+        // ---- PRIMITIVES ----
         brandscale: {
           50: "#FFF4ED",
           100: "#FFE4D2",
@@ -64,7 +64,6 @@ export default {
           900: "#18191C",
           950: "#0D0E10",
         },
-        // Cube-face colors — first-class palette citizens (Section 2)
         cube: {
           white: "#FFFFFF",
           yellow: "#FFD500",
@@ -73,7 +72,6 @@ export default {
           green: "#009B48",
           blue: "#0045AD",
         },
-        // Chrome / metallic ramp (Section 4/5)
         chrome: {
           highlight: "#F5F6F8",
           light: "#D7DAE0",
@@ -82,7 +80,7 @@ export default {
           deep: "#3A3D45",
         },
 
-        // ---- SEMANTIC TOKENS (mode-aware, Section 2) ----
+        // ---- SEMANTIC TOKENS (mode-aware) ----
         bg: {
           default: semantic("bg-default"),
           subtle: semantic("bg-subtle"),
@@ -109,7 +107,6 @@ export default {
           hover: semantic("brand-hover"),
           subtle: semantic("brand-subtle"),
         },
-        // Status — same value both modes (Section 2)
         status: {
           success: "#1F9254",
           warning: "#E8A400",
@@ -120,7 +117,7 @@ export default {
         display: ['"Space Grotesk"', "system-ui", "sans-serif"],
         body: ['"Inter"', "system-ui", "sans-serif"],
       },
-      // --- Type scale (Section 3) ---
+      // --- Type scale ---
       fontSize: {
         "display-lg": ["48px", { lineHeight: "56px", fontWeight: "700" }],
         "display-sm": ["36px", { lineHeight: "44px", fontWeight: "700" }],
@@ -135,9 +132,28 @@ export default {
         caption: ["12px", { lineHeight: "16px", fontWeight: "500", letterSpacing: "0.1px" }],
       },
       backgroundImage: {
-        // Chrome/metallic diagonal sweep (Section 5) — deliberate, sparing use only.
         "chrome-gradient":
           "linear-gradient(135deg, #F5F6F8 0%, #D7DAE0 28%, #A6ABB6 52%, #6B707C 78%, #3A3D45 100%)",
+      },
+      // --- Theme-aware animations ---
+      keyframes: {
+        "theme-fade-in": {
+          "0%": { opacity: "0.7", transform: "scale(0.98)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "slide-up": {
+          "0%": { opacity: "0", transform: "translateY(12px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
+      animation: {
+        "theme-fade-in": "theme-fade-in 300ms cubic-bezier(0.2, 0, 0, 1)",
+        "slide-up": "slide-up 400ms cubic-bezier(0.2, 0, 0, 1)",
+        "fade-in": "fade-in 300ms cubic-bezier(0.2, 0, 0, 1)",
       },
     },
   },

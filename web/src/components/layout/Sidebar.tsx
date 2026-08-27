@@ -6,20 +6,18 @@ import { Button } from "@/components/ui/Button";
 import { NAV_DESTINATIONS } from "@/config/nav";
 
 /**
- * Persistent left sidebar rail (Section 6.1). Never scrolls away.
- * Order: logo → primary CTA (Scan Cube, an ACTION) → nav destinations.
- * Shares the single app background — only the CTA gets elevated/brand treatment.
+ * Persistent left sidebar rail. Hidden on mobile (BottomNav takes over).
+ * Uses theme-aware .cubr-sidebar class from globals.css.
  */
 export function Sidebar() {
   const navigate = useNavigate();
 
   return (
-    <aside className="hidden md:flex w-64 shrink-0 flex-col gap-6 border-r border-border-subtle px-4 py-5">
+    <aside className="cubr-sidebar hidden md:flex w-64 shrink-0 flex-col gap-6 px-4 py-5">
       <div className="px-2">
         <Logo />
       </div>
 
-      {/* Primary CTA — an action, sits ABOVE the nav list (Section 6.2) */}
       <Button
         size="lg"
         className="w-full justify-start gap-3"

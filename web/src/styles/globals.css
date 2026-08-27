@@ -1,59 +1,264 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ============================================================
+   LIQUID GLASS TOKENS
+   ============================================================ */
+
+/* Light + Liquid Glass */
+:root[data-theme="light"][data-visual-theme="liquid-glass"] {
+  --glass-bg: 255 255 255;
+  --glass-bg-alpha: 0.7;
+  --glass-blur: 20px;
+  --glass-border: 200 200 210;
+  --glass-border-alpha: 0.35;
+  --glass-border-strong-alpha: 0.5;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --glass-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --glass-highlight: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+  --glass-inset-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --card-bg: 255 255 255;
+  --card-bg-alpha: 0.6;
+  --card-border: 200 200 210;
+  --card-border-alpha: 0.3;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.03);
+  --nav-bg: 255 255 255;
+  --nav-bg-alpha: 0.5;
+  --nav-blur: 24px;
+  --topbar-bg: 255 255 255;
+  --topbar-bg-alpha: 0.5;
+  --topbar-blur: 20px;
+  --bottombar-bg: 255 255 255;
+  --bottombar-bg-alpha: 0.55;
+  --bottombar-blur: 20px;
+  --btn-glass-bg: 255 255 255;
+  --btn-glass-bg-alpha: 0.4;
+  --btn-glass-border: 255 255 255;
+  --btn-glass-border-alpha: 0.5;
+  --elevation-1: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --elevation-3: 0 8px 24px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.05);
+  --elevation-4: 0 16px 48px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.06);
+  --radius-card: 20px;
+  --radius-btn: 14px;
+  --radius-input: 12px;
+  --radius-nav: 16px;
+  --radius-bottomsheet: 24px;
+  --radius-chip: 12px;
+}
+
+/* Dark + Liquid Glass */
+:root[data-theme="dark"][data-visual-theme="liquid-glass"] {
+  --glass-bg: 255 255 255;
+  --glass-bg-alpha: 0.08;
+  --glass-blur: 24px;
+  --glass-border: 255 255 255;
+  --glass-border-alpha: 0.15;
+  --glass-border-strong-alpha: 0.25;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --glass-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --glass-highlight: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0) 100%);
+  --glass-inset-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --card-bg: 255 255 255;
+  --card-bg-alpha: 0.06;
+  --card-border: 255 255 255;
+  --card-border-alpha: 0.12;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 1px 4px rgba(0, 0, 0, 0.15);
+  --nav-bg: 255 255 255;
+  --nav-bg-alpha: 0.06;
+  --nav-blur: 28px;
+  --topbar-bg: 255 255 255;
+  --topbar-bg-alpha: 0.06;
+  --topbar-blur: 24px;
+  --bottombar-bg: 255 255 255;
+  --bottombar-bg-alpha: 0.08;
+  --bottombar-blur: 24px;
+  --btn-glass-bg: 255 255 255;
+  --btn-glass-bg-alpha: 0.1;
+  --btn-glass-border: 255 255 255;
+  --btn-glass-border-alpha: 0.15;
+  --elevation-1: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);
+  --elevation-3: 0 8px 24px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2);
+  --elevation-4: 0 16px 48px rgba(0,0,0,0.35), 0 8px 16px rgba(0,0,0,0.25);
+  --radius-card: 20px;
+  --radius-btn: 14px;
+  --radius-input: 12px;
+  --radius-nav: 16px;
+  --radius-bottomsheet: 24px;
+  --radius-chip: 12px;
+}
 
 /* ============================================================
-   SEMANTIC TOKENS — Section 2
-   Channels stored as "R G B" so Tailwind can apply <alpha-value>.
-   Light mode is the :root default; [data-theme="dark"] overrides.
-   Light and dark are supported equally — neither is primary.
+   MATERIAL 3 TOKENS
+   ============================================================ */
+
+/* Light + Material 3 */
+:root[data-theme="light"][data-visual-theme="material3"],
+:root[data-visual-theme="material3"] {
+  --m3-surface: 255 255 255;
+  --m3-surface-dim: 232 232 232;
+  --m3-surface-bright: 255 255 255;
+  --m3-surface-container-lowest: 255 255 255;
+  --m3-surface-container-low: 245 245 245;
+  --m3-surface-container: 240 240 240;
+  --m3-surface-container-high: 234 234 234;
+  --m3-surface-container-highest: 228 228 228;
+  --m3-on-surface: 28 27 31;
+  --m3-on-surface-variant: 74 74 92;
+  --m3-outline: 121 121 139;
+  --m3-outline-variant: 202 202 214;
+  --m3-primary: 255 107 15;
+  --m3-on-primary: 255 255 255;
+  --m3-primary-container: 255 220 185;
+  --m3-on-primary-container: 56 21 0;
+  --m3-secondary: 105 100 115;
+  --m3-on-secondary: 255 255 255;
+  --m3-secondary-container: 236 230 245;
+  --m3-on-secondary-container: 35 30 45;
+  --m3-tertiary: 130 85 105;
+  --m3-on-tertiary: 255 255 255;
+  --m3-tertiary-container: 254 215 230;
+  --m3-on-tertiary-container: 51 20 35;
+  --m3-error: 186 26 26;
+  --m3-on-error: 255 255 255;
+  --m3-error-container: 255 218 218;
+  --m3-on-error-container: 65 0 2;
+  --m3-elevation-0: none;
+  --m3-elevation-1: 0 1px 2px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+  --m3-elevation-2: 0 2px 4px rgba(0,0,0,0.12), 0 1px 5px rgba(0,0,0,0.08);
+  --m3-elevation-3: 0 4px 8px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08);
+  --m3-elevation-4: 0 6px 12px rgba(0,0,0,0.12), 0 3px 8px rgba(0,0,0,0.08);
+  --m3-shape-none: 0px;
+  --m3-shape-xs: 4px;
+  --m3-shape-sm: 8px;
+  --m3-shape-md: 12px;
+  --m3-shape-lg: 16px;
+  --m3-shape-xl: 28px;
+  --m3-shape-full: 9999px;
+  --m3-state-hover: 0.08;
+  --m3-state-focus: 0.12;
+  --m3-state-pressed: 0.12;
+  --m3-state-dragged: 0.16;
+  --radius-card: var(--m3-shape-lg);
+  --radius-btn: var(--m3-shape-full);
+  --radius-input: var(--m3-shape-xs);
+  --radius-nav: var(--m3-shape-lg);
+  --radius-bottomsheet: var(--m3-shape-xl) var(--m3-shape-xl) 0 0;
+  --radius-chip: var(--m3-shape-sm);
+}
+
+/* Dark + Material 3 */
+:root[data-theme="dark"][data-visual-theme="material3"] {
+  --m3-surface: 28 27 31;
+  --m3-surface-dim: 28 27 31;
+  --m3-surface-bright: 54 53 58;
+  --m3-surface-container-lowest: 23 22 26;
+  --m3-surface-container-low: 36 35 39;
+  --m3-surface-container: 40 39 44;
+  --m3-surface-container-high: 50 49 54;
+  --m3-surface-container-highest: 59 58 63;
+  --m3-on-surface: 230 229 234;
+  --m3-on-surface-variant: 202 202 214;
+  --m3-outline: 148 148 163;
+  --m3-outline-variant: 74 74 92;
+  --m3-primary: 255 163 102;
+  --m3-on-primary: 73 33 0;
+  --m3-primary-container: 102 49 0;
+  --m3-on-primary-container: 255 220 185;
+  --m3-secondary: 204 198 214;
+  --m3-on-secondary: 56 51 65;
+  --m3-secondary-container: 79 75 90;
+  --m3-on-secondary-container: 236 230 245;
+  --m3-tertiary: 235 185 205;
+  --m3-on-tertiary: 73 40 55;
+  --m3-tertiary-container: 100 62 80;
+  --m3-on-tertiary-container: 254 215 230;
+  --m3-error: 255 184 184;
+  --m3-on-error: 86 14 14;
+  --m3-error-container: 128 34 34;
+  --m3-on-error-container: 255 218 218;
+  --m3-elevation-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.24);
+  --m3-elevation-2: 0 2px 6px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.24);
+  --m3-elevation-3: 0 4px 10px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.24);
+  --m3-elevation-4: 0 6px 14px rgba(0,0,0,0.3), 0 3px 8px rgba(0,0,0,0.24);
+  --radius-card: var(--m3-shape-lg);
+  --radius-btn: var(--m3-shape-full);
+  --radius-input: var(--m3-shape-xs);
+  --radius-nav: var(--m3-shape-lg);
+  --radius-bottomsheet: var(--m3-shape-xl) var(--m3-shape-xl) 0 0;
+  --radius-chip: var(--m3-shape-sm);
+}
+
+/* ============================================================
+   SEMANTIC TOKENS — light/dark base
    ============================================================ */
 :root,
 :root[data-theme="light"] {
-  --bg-default: 255 255 255; /* neutral/0 */
-  --bg-subtle: 247 247 248; /* neutral/50 */
-
-  --surface-default: 255 255 255; /* neutral/0 */
-  --surface-raised: 247 247 248; /* neutral/50 */
-  --surface-sunken: 237 238 240; /* neutral/100 */
-
-  --text-primary: 24 25 28; /* neutral/900 */
-  --text-secondary: 84 86 95; /* neutral/600 */
-  --text-tertiary: 154 157 168; /* neutral/400 */
-  --text-on-brand: 255 255 255; /* neutral/0 */
-  --text-inverse: 255 255 255; /* neutral/0 */
-
-  --border-default: 220 221 226; /* neutral/200 */
-  --border-subtle: 237 238 240; /* neutral/100 */
-  --border-strong: 154 157 168; /* neutral/400 */
-
-  --brand-default: 255 107 15; /* orange/500 */
-  --brand-hover: 242 87 0; /* orange/600 */
-  --brand-subtle: 255 244 237; /* orange/50 */
+  --bg-default: 255 255 255;
+  --bg-subtle: 247 247 248;
+  --surface-default: 255 255 255;
+  --surface-raised: 247 247 248;
+  --surface-sunken: 237 238 240;
+  --text-primary: 24 25 28;
+  --text-secondary: 84 86 95;
+  --text-tertiary: 154 157 168;
+  --text-on-brand: 255 255 255;
+  --text-inverse: 255 255 255;
+  --border-default: 220 221 226;
+  --border-subtle: 237 238 240;
+  --border-strong: 154 157 168;
+  --brand-default: 255 107 15;
+  --brand-hover: 242 87 0;
+  --brand-subtle: 255 244 237;
 }
 
 :root[data-theme="dark"] {
-  --bg-default: 13 14 16; /* neutral/950 */
-  --bg-subtle: 24 25 28; /* neutral/900 */
-
-  --surface-default: 24 25 28; /* neutral/900 */
-  --surface-raised: 38 39 44; /* neutral/800 */
-  --surface-sunken: 13 14 16; /* neutral/950 */
-
-  --text-primary: 247 247 248; /* neutral/50 */
-  --text-secondary: 194 196 203; /* neutral/300 */
-  --text-tertiary: 113 116 126; /* neutral/500 */
-  --text-on-brand: 255 255 255; /* neutral/0 */
-  --text-inverse: 24 25 28; /* neutral/900 */
-
-  --border-default: 60 62 69; /* neutral/700 */
-  --border-subtle: 38 39 44; /* neutral/800 */
-  --border-strong: 113 116 126; /* neutral/500 */
-
-  --brand-default: 255 133 51; /* orange/400 */
-  --brand-hover: 255 163 102; /* orange/300 */
-  --brand-subtle: 122 43 0; /* orange/900 */
+  --bg-default: 13 14 16;
+  --bg-subtle: 24 25 28;
+  --surface-default: 24 25 28;
+  --surface-raised: 38 39 44;
+  --surface-sunken: 13 14 16;
+  --text-primary: 247 247 248;
+  --text-secondary: 194 196 203;
+  --text-tertiary: 113 116 126;
+  --text-on-brand: 255 255 255;
+  --text-inverse: 24 25 28;
+  --border-default: 60 62 69;
+  --border-subtle: 38 39 44;
+  --border-strong: 113 116 126;
+  --brand-default: 255 133 51;
+  --brand-hover: 255 163 102;
+  --brand-subtle: 122 43 0;
 }
+
+/* ============================================================
+   THEME-AWARE BACKGROUND OVERRIDES
+   ============================================================ */
+
+:root[data-visual-theme="material3"][data-theme="light"] {
+  --bg-default: 255 255 255;
+  --bg-subtle: 245 245 245;
+  --surface-default: 255 255 255;
+  --surface-raised: 245 245 245;
+  --surface-sunken: 240 240 240;
+  --border-default: 202 202 214;
+  --border-subtle: 228 228 228;
+}
+
+:root[data-visual-theme="material3"][data-theme="dark"] {
+  --bg-default: 28 27 31;
+  --bg-subtle: 36 35 39;
+  --surface-default: 28 27 31;
+  --surface-raised: 40 39 44;
+  --surface-sunken: 23 22 26;
+  --border-default: 74 74 92;
+  --border-subtle: 50 49 54;
+}
+
+/* ============================================================
+   TAILWIND + BASE
+   ============================================================ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   html,
@@ -66,11 +271,25 @@
     @apply bg-bg-default text-text-primary font-body antialiased;
   }
 
+  /* Liquid glass body — subtle gradient backdrop so blur has something to show */
+  :root[data-visual-theme="liquid-glass"][data-theme="dark"] body {
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255, 107, 15, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(0, 155, 72, 0.06) 0%, transparent 50%),
+      rgb(var(--bg-default));
+  }
+
+  :root[data-visual-theme="liquid-glass"][data-theme="light"] body {
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255, 107, 15, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(0, 155, 72, 0.04) 0%, transparent 50%),
+      rgb(var(--bg-default));
+  }
+
   ::selection {
     background: rgb(var(--brand-default) / 0.28);
   }
 
-  /* Focus-visible ring bound to brand — a single accessible affordance. */
   :focus-visible {
     outline: 2px solid rgb(var(--brand-default));
     outline-offset: 2px;
@@ -78,8 +297,7 @@
 }
 
 @layer components {
-  /* ---- Type styles (Section 3). Color is intentionally NOT set here —
-     text fills are applied explicitly at the call site, per the brief note. ---- */
+  /* ---- Type styles ---- */
   .type-display-lg { @apply font-display text-display-lg; }
   .type-display-sm { @apply font-display text-display-sm; }
   .type-heading-lg { @apply font-display text-heading-lg; }
@@ -91,10 +309,192 @@
   .type-label-lg { @apply font-body text-label-lg; }
   .type-label-md { @apply font-body text-label-md; }
   .type-caption { @apply font-body text-caption uppercase; }
+
+  /* ---- Theme-aware surface ---- */
+  .cubr-surface {
+    border-radius: var(--radius-card, 16px);
+    transition: background 200ms, border-color 200ms, box-shadow 200ms;
+    background: rgb(var(--surface-raised));
+    border: 1px solid rgb(var(--border-default));
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-surface {
+    background: rgba(var(--card-bg, 255 255 255), var(--card-bg-alpha, 0.06));
+    backdrop-filter: blur(var(--glass-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 20px));
+    border: 1px solid rgba(var(--card-border, 255 255 255), var(--card-border-alpha, 0.1));
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--glass-highlight);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  :root[data-visual-theme="material3"] .cubr-surface {
+    background: rgb(var(--m3-surface-container, 240 240 240));
+    border: none;
+    box-shadow: var(--m3-elevation-1, 0 1px 3px rgba(0,0,0,0.12));
+  }
+
+  /* ---- Theme-aware topbar ---- */
+  .cubr-topbar {
+    transition: background 200ms, border-color 200ms, box-shadow 200ms;
+    background: rgb(var(--bg-default));
+    border-bottom: 1px solid rgb(var(--border-subtle));
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-topbar {
+    background: rgba(var(--topbar-bg, 255 255 255), var(--topbar-bg-alpha, 0.06));
+    backdrop-filter: blur(var(--topbar-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--topbar-blur, 20px));
+    border-bottom: 1px solid rgba(var(--glass-border, 255 255 255), var(--glass-border-alpha, 0.1));
+  }
+
+  :root[data-visual-theme="material3"] .cubr-topbar {
+    background: rgb(var(--m3-surface, 255 255 255));
+    border-bottom: none;
+    box-shadow: var(--m3-elevation-2, 0 2px 4px rgba(0,0,0,0.12));
+  }
+
+  /* ---- Theme-aware bottom nav ---- */
+  .cubr-bottombar {
+    transition: background 200ms, border-color 200ms, box-shadow 200ms;
+    background: rgb(var(--bg-default));
+    border-top: 1px solid rgb(var(--border-subtle));
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-bottombar {
+    background: rgba(var(--bottombar-bg, 255 255 255), var(--bottombar-bg-alpha, 0.08));
+    backdrop-filter: blur(var(--bottombar-blur, 20px));
+    -webkit-backdrop-filter: blur(var(--bottombar-blur, 20px));
+    border-top: 1px solid rgba(var(--glass-border, 255 255 255), var(--glass-border-alpha, 0.1));
+  }
+
+  :root[data-visual-theme="material3"] .cubr-bottombar {
+    background: rgb(var(--m3-surface-container, 240 240 240));
+    border-top: none;
+    box-shadow: var(--m3-elevation-2, 0 2px 4px rgba(0,0,0,0.12));
+  }
+
+  /* ---- Theme-aware sidebar ---- */
+  .cubr-sidebar {
+    transition: background 200ms, border-color 200ms;
+    background: rgb(var(--bg-default));
+    border-right: 1px solid rgb(var(--border-subtle));
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-sidebar {
+    background: rgba(var(--nav-bg, 255 255 255), var(--nav-bg-alpha, 0.06));
+    backdrop-filter: blur(var(--nav-blur, 24px));
+    -webkit-backdrop-filter: blur(var(--nav-blur, 24px));
+    border-right: 1px solid rgba(var(--glass-border, 255 255 255), var(--glass-border-alpha, 0.1));
+  }
+
+  :root[data-visual-theme="material3"] .cubr-sidebar {
+    background: rgb(var(--m3-surface, 255 255 255));
+    border-right: none;
+  }
+
+  /* ---- Theme-aware input ---- */
+  .cubr-input {
+    transition: background 200ms, border-color 200ms, box-shadow 200ms;
+    background: rgb(var(--surface-raised));
+    border: 1px solid rgb(var(--border-default));
+    border-radius: 8px;
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-input {
+    background: rgba(var(--card-bg, 255 255 255), var(--card-bg-alpha, 0.06));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--card-border, 255 255 255), var(--card-border-alpha, 0.1));
+    box-shadow: var(--glass-inset-shadow, inset 0 1px 0 rgba(255,255,255,0.05));
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-input:focus {
+    border-color: rgba(var(--brand-default), 0.5);
+    box-shadow: var(--glass-inset-shadow, inset 0 1px 0 rgba(255,255,255,0.05)),
+                0 0 0 2px rgba(var(--brand-default), 0.12);
+  }
+
+  :root[data-visual-theme="material3"] .cubr-input {
+    background: transparent;
+    border: 1px solid rgb(var(--m3-outline, 121 121 139));
+    border-radius: var(--m3-shape-xs, 4px);
+    box-shadow: none;
+  }
+
+  :root[data-visual-theme="material3"] .cubr-input:focus {
+    border-color: rgb(var(--m3-primary, 255 107 15));
+    border-width: 2px;
+    box-shadow: none;
+  }
+
+  /* ---- Theme-aware buttons ---- */
+  .cubr-btn {
+    transition: all 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-btn-primary {
+    box-shadow: 0 2px 12px rgba(var(--brand-default), 0.3),
+                var(--glass-inset-shadow, inset 0 1px 0 rgba(255,255,255,0.2));
+  }
+
+  :root[data-visual-theme="material3"] .cubr-btn-primary {
+    border-radius: var(--radius-btn);
+    box-shadow: none;
+  }
+
+  :root[data-visual-theme="material3"] .cubr-btn-primary:hover {
+    box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0,0,0,0.12));
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-btn-secondary {
+    background: rgba(var(--btn-glass-bg, 255 255 255), var(--btn-glass-bg-alpha, 0.1));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--btn-glass-border, 255 255 255), var(--btn-glass-border-alpha, 0.15));
+    box-shadow: var(--elevation-1);
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-btn-secondary:hover {
+    background: rgba(var(--btn-glass-bg, 255 255 255), calc(var(--btn-glass-bg-alpha, 0.1) + 0.08));
+    border-color: rgba(var(--btn-glass-border, 255 255 255), calc(var(--btn-glass-border-alpha, 0.15) + 0.1));
+  }
+
+  :root[data-visual-theme="material3"] .cubr-btn-secondary {
+    background: rgb(var(--m3-secondary-container, 236 230 245));
+    color: rgb(var(--m3-on-secondary-container, 35 30 45));
+    border: none;
+    border-radius: var(--radius-btn);
+    box-shadow: var(--m3-elevation-0, none);
+  }
+
+  :root[data-visual-theme="material3"] .cubr-btn-secondary:hover {
+    box-shadow: var(--m3-elevation-1, 0 1px 2px rgba(0,0,0,0.12));
+  }
+
+  :root[data-visual-theme="liquid-glass"] .cubr-btn-ghost:hover {
+    background: rgba(var(--btn-glass-bg, 255 255 255), 0.06);
+  }
+
+  :root[data-visual-theme="material3"] .cubr-btn-ghost {
+    border-radius: var(--radius-btn);
+  }
+
+  :root[data-visual-theme="material3"] .cubr-btn-ghost:hover {
+    background: rgba(var(--m3-on-surface, 28 27 31), 0.08);
+  }
 }
 
 @layer utilities {
-  /* Hide scrollbars on horizontal shelves while keeping scroll behaviour. */
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;

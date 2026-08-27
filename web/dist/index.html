@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-visual-theme="liquid-glass">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,11 +16,15 @@
           } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
             document.documentElement.setAttribute("data-theme", "light");
           }
+          var vt = localStorage.getItem("cubr-visual-theme");
+          if (vt === "liquid-glass" || vt === "material3") {
+            document.documentElement.setAttribute("data-visual-theme", vt);
+          }
         } catch (e) {}
       })();
     </script>
-    <script type="module" crossorigin src="/assets/index-D3yOTJkP.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Ix10daif.css">
+    <script type="module" crossorigin src="/assets/index-DUcfKfQt.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C_VaZmCr.css">
   </head>
   <body>
     <div id="root"></div>

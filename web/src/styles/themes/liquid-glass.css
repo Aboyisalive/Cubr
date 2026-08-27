@@ -1,0 +1,222 @@
+/*
+ * Liquid Glass Theme
+ * Frosted, translucent, premium, spatial, layered.
+ * Glass surfaces float above the background with backdrop-blur and subtle borders.
+ */
+
+/* ---------- Liquid Glass tokens (both light and dark) ---------- */
+
+/* Light + Liquid Glass */
+:root[data-theme="light"][data-visual-theme="liquid-glass"],
+:root[data-visual-theme="liquid-glass"] {
+  /* Surfaces: translucent with blur */
+  --glass-bg: 255 255 255;
+  --glass-bg-alpha: 0.55;
+  --glass-blur: 20px;
+  --glass-border: 255 255 255;
+  --glass-border-alpha: 0.45;
+  --glass-border-strong-alpha: 0.6;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --glass-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+  --glass-highlight: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+  --glass-inset-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  /* Card surface */
+  --card-bg: 255 255 255;
+  --card-bg-alpha: 0.45;
+  --card-border: 255 255 255;
+  --card-border-alpha: 0.4;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.03);
+
+  /* Navigation / sidebar */
+  --nav-bg: 255 255 255;
+  --nav-bg-alpha: 0.5;
+  --nav-blur: 24px;
+
+  /* TopBar */
+  --topbar-bg: 255 255 255;
+  --topbar-bg-alpha: 0.5;
+  --topbar-blur: 20px;
+
+  /* BottomBar */
+  --bottombar-bg: 255 255 255;
+  --bottombar-bg-alpha: 0.55;
+  --bottombar-blur: 20px;
+
+  /* Button glass */
+  --btn-glass-bg: 255 255 255;
+  --btn-glass-bg-alpha: 0.4;
+  --btn-glass-border: 255 255 255;
+  --btn-glass-border-alpha: 0.5;
+
+  /* Elevation ramp (translucent shadows) */
+  --elevation-1: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --elevation-3: 0 8px 24px rgba(0,0,0,0.09), 0 4px 8px rgba(0,0,0,0.05);
+  --elevation-4: 0 16px 48px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.06);
+
+  /* Radius */
+  --radius-card: 20px;
+  --radius-btn: 14px;
+  --radius-input: 12px;
+  --radius-nav: 16px;
+  --radius-bottomsheet: 24px;
+  --radius-chip: 12px;
+}
+
+/* Dark + Liquid Glass */
+:root[data-theme="dark"][data-visual-theme="liquid-glass"] {
+  --glass-bg: 255 255 255;
+  --glass-bg-alpha: 0.08;
+  --glass-blur: 24px;
+  --glass-border: 255 255 255;
+  --glass-border-alpha: 0.12;
+  --glass-border-strong-alpha: 0.22;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --glass-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --glass-highlight: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0) 100%);
+  --glass-inset-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  --card-bg: 255 255 255;
+  --card-bg-alpha: 0.06;
+  --card-border: 255 255 255;
+  --card-border-alpha: 0.1;
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 1px 4px rgba(0, 0, 0, 0.15);
+
+  --nav-bg: 255 255 255;
+  --nav-bg-alpha: 0.06;
+  --nav-blur: 28px;
+
+  --topbar-bg: 255 255 255;
+  --topbar-bg-alpha: 0.06;
+  --topbar-blur: 24px;
+
+  --bottombar-bg: 255 255 255;
+  --bottombar-bg-alpha: 0.08;
+  --bottombar-blur: 24px;
+
+  --btn-glass-bg: 255 255 255;
+  --btn-glass-bg-alpha: 0.1;
+  --btn-glass-border: 255 255 255;
+  --btn-glass-border-alpha: 0.15;
+
+  --elevation-1: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+  --elevation-2: 0 4px 12px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);
+  --elevation-3: 0 8px 24px rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2);
+  --elevation-4: 0 16px 48px rgba(0,0,0,0.35), 0 8px 16px rgba(0,0,0,0.25);
+
+  --radius-card: 20px;
+  --radius-btn: 14px;
+  --radius-input: 12px;
+  --radius-nav: 16px;
+  --radius-bottomsheet: 24px;
+  --radius-chip: 12px;
+}
+
+/* ---------- Liquid Glass component classes ---------- */
+
+@layer components {
+  /* Glass surface — the core building block */
+  .lg-surface {
+    background: rgba(var(--glass-bg), var(--glass-bg-alpha));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(var(--glass-border), var(--glass-border-alpha));
+    box-shadow: var(--glass-shadow), var(--glass-inset-shadow);
+    border-radius: var(--radius-card);
+  }
+
+  /* Glass card */
+  .lg-card {
+    background: rgba(var(--card-bg), var(--card-bg-alpha));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(var(--card-border), var(--card-border-alpha));
+    box-shadow: var(--card-shadow);
+    border-radius: var(--radius-card);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lg-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--glass-highlight);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Glass nav */
+  .lg-nav {
+    background: rgba(var(--nav-bg), var(--nav-bg-alpha));
+    backdrop-filter: blur(var(--nav-blur));
+    -webkit-backdrop-filter: blur(var(--nav-blur));
+    border: 1px solid rgba(var(--glass-border), var(--glass-border-alpha));
+  }
+
+  /* Glass topbar */
+  .lg-topbar {
+    background: rgba(var(--topbar-bg), var(--topbar-bg-alpha));
+    backdrop-filter: blur(var(--topbar-blur));
+    -webkit-backdrop-filter: blur(var(--topbar-blur));
+    border-bottom: 1px solid rgba(var(--glass-border), var(--glass-border-alpha));
+  }
+
+  /* Glass bottom bar */
+  .lg-bottombar {
+    background: rgba(var(--bottombar-bg), var(--bottombar-bg-alpha));
+    backdrop-filter: blur(var(--bottombar-blur));
+    -webkit-backdrop-filter: blur(var(--bottombar-blur));
+    border-top: 1px solid rgba(var(--glass-border), var(--glass-border-alpha));
+  }
+
+  /* Glass button (secondary/ghost variant) */
+  .lg-btn-glass {
+    background: rgba(var(--btn-glass-bg), var(--btn-glass-bg-alpha));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--btn-glass-border), var(--btn-glass-border-alpha));
+    box-shadow: var(--elevation-1);
+    border-radius: var(--radius-btn);
+  }
+
+  .lg-btn-glass:hover {
+    background: rgba(var(--btn-glass-bg), calc(var(--btn-glass-bg-alpha) + 0.08));
+    border-color: rgba(var(--btn-glass-border), calc(var(--btn-glass-border-alpha) + 0.1));
+  }
+
+  /* Glass input */
+  .lg-input {
+    background: rgba(var(--card-bg), var(--card-bg-alpha));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--card-border), var(--card-border-alpha));
+    border-radius: var(--radius-input);
+    box-shadow: var(--glass-inset-shadow);
+  }
+
+  .lg-input:focus {
+    border-color: rgba(var(--brand-default), 0.6);
+    box-shadow: var(--glass-inset-shadow), 0 0 0 2px rgba(var(--brand-default), 0.15);
+  }
+
+  /* Glass chip */
+  .lg-chip {
+    background: rgba(var(--btn-glass-bg), var(--btn-glass-bg-alpha));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(var(--btn-glass-border), var(--btn-glass-border-alpha));
+    border-radius: var(--radius-chip);
+  }
+
+  /* Glass bottom sheet */
+  .lg-bottom-sheet {
+    background: rgba(var(--glass-bg), var(--glass-bg-alpha));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid rgba(var(--glass-border), var(--glass-border-alpha));
+    border-radius: var(--radius-bottomsheet) var(--radius-bottomsheet) 0 0;
+    box-shadow: var(--glass-shadow-lg);
+  }
+}

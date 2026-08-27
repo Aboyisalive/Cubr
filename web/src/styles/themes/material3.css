@@ -1,0 +1,324 @@
+/*
+ * Material 3 Theme
+ * Clean, structured, accessible, modern Android-native, functional.
+ * Tonal surfaces, elevation, clear hierarchy.
+ */
+
+/* ---------- Material 3 tokens ---------- */
+
+/* Light + Material 3 */
+:root[data-theme="light"][data-visual-theme="material3"],
+:root[data-visual-theme="material3"] {
+  /* M3 surface tones */
+  --m3-surface: 255 255 255;
+  --m3-surface-dim: 232 232 232;
+  --m3-surface-bright: 255 255 255;
+  --m3-surface-container-lowest: 255 255 255;
+  --m3-surface-container-low: 245 245 245;
+  --m3-surface-container: 240 240 240;
+  --m3-surface-container-high: 234 234 234;
+  --m3-surface-container-highest: 228 228 228;
+
+  /* M3 on-surface */
+  --m3-on-surface: 28 27 31;
+  --m3-on-surface-variant: 74 74 92;
+  --m3-outline: 121 121 139;
+  --m3-outline-variant: 202 202 214;
+
+  /* M3 primary */
+  --m3-primary: 255 107 15;
+  --m3-on-primary: 255 255 255;
+  --m3-primary-container: 255 220 185;
+  --m3-on-primary-container: 56 21 0;
+
+  /* M3 secondary */
+  --m3-secondary: 105 100 115;
+  --m3-on-secondary: 255 255 255;
+  --m3-secondary-container: 236 230 245;
+  --m3-on-secondary-container: 35 30 45;
+
+  /* M3 tertiary */
+  --m3-tertiary: 130 85 105;
+  --m3-on-tertiary: 255 255 255;
+  --m3-tertiary-container: 254 215 230;
+  --m3-on-tertiary-container: 51 20 35;
+
+  /* M3 error */
+  --m3-error: 186 26 26;
+  --m3-on-error: 255 255 255;
+  --m3-error-container: 255 218 218;
+  --m3-on-error-container: 65 0 2;
+
+  /* Elevation overlays (M3 uses tonal elevation, not shadow) */
+  --m3-elevation-0: none;
+  --m3-elevation-1: 0 1px 2px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+  --m3-elevation-2: 0 2px 4px rgba(0,0,0,0.12), 0 1px 5px rgba(0,0,0,0.08);
+  --m3-elevation-3: 0 4px 8px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08);
+  --m3-elevation-4: 0 6px 12px rgba(0,0,0,0.12), 0 3px 8px rgba(0,0,0,0.08);
+
+  /* M3 shape */
+  --m3-shape-none: 0px;
+  --m3-shape-xs: 4px;
+  --m3-shape-sm: 8px;
+  --m3-shape-md: 12px;
+  --m3-shape-lg: 16px;
+  --m3-shape-xl: 28px;
+  --m3-shape-full: 9999px;
+
+  /* M3 state layers */
+  --m3-state-hover: 0.08;
+  --m3-state-focus: 0.12;
+  --m3-state-pressed: 0.12;
+  --m3-state-dragged: 0.16;
+
+  --radius-card: var(--m3-shape-lg);
+  --radius-btn: var(--m3-shape-full);
+  --radius-input: var(--m3-shape-xs);
+  --radius-nav: var(--m3-shape-lg);
+  --radius-bottomsheet: var(--m3-shape-xl) var(--m3-shape-xl) 0 0;
+  --radius-chip: var(--m3-shape-sm);
+}
+
+/* Dark + Material 3 */
+:root[data-theme="dark"][data-visual-theme="material3"] {
+  --m3-surface: 28 27 31;
+  --m3-surface-dim: 28 27 31;
+  --m3-surface-bright: 54 53 58;
+  --m3-surface-container-lowest: 23 22 26;
+  --m3-surface-container-low: 36 35 39;
+  --m3-surface-container: 40 39 44;
+  --m3-surface-container-high: 50 49 54;
+  --m3-surface-container-highest: 59 58 63;
+
+  --m3-on-surface: 230 229 234;
+  --m3-on-surface-variant: 202 202 214;
+  --m3-outline: 148 148 163;
+  --m3-outline-variant: 74 74 92;
+
+  --m3-primary: 255 163 102;
+  --m3-on-primary: 73 33 0;
+  --m3-primary-container: 102 49 0;
+  --m3-on-primary-container: 255 220 185;
+
+  --m3-secondary: 204 198 214;
+  --m3-on-secondary: 56 51 65;
+  --m3-secondary-container: 79 75 90;
+  --m3-on-secondary-container: 236 230 245;
+
+  --m3-tertiary: 235 185 205;
+  --m3-on-tertiary: 73 40 55;
+  --m3-tertiary-container: 100 62 80;
+  --m3-on-tertiary-container: 254 215 230;
+
+  --m3-error: 255 184 184;
+  --m3-on-error: 86 14 14;
+  --m3-error-container: 128 34 34;
+  --m3-on-error-container: 255 218 218;
+
+  --m3-elevation-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.24);
+  --m3-elevation-2: 0 2px 6px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.24);
+  --m3-elevation-3: 0 4px 10px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.24);
+  --m3-elevation-4: 0 6px 14px rgba(0,0,0,0.3), 0 3px 8px rgba(0,0,0,0.24);
+
+  --radius-card: var(--m3-shape-lg);
+  --radius-btn: var(--m3-shape-full);
+  --radius-input: var(--m3-shape-xs);
+  --radius-nav: var(--m3-shape-lg);
+  --radius-bottomsheet: var(--m3-shape-xl) var(--m3-shape-xl) 0 0;
+  --radius-chip: var(--m3-shape-sm);
+}
+
+/* ---------- Material 3 component classes ---------- */
+
+@layer components {
+  /* M3 elevated card — tonal surface, no blur */
+  .m3-card {
+    background: rgb(var(--m3-surface-container));
+    border: none;
+    border-radius: var(--radius-card);
+    box-shadow: var(--m3-elevation-1);
+    transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-card:hover {
+    box-shadow: var(--m3-elevation-2);
+  }
+
+  /* M3 filled card */
+  .m3-card-filled {
+    background: rgb(var(--m3-surface-container-highest));
+    border: none;
+    border-radius: var(--radius-card);
+  }
+
+  /* M3 outlined card */
+  .m3-card-outlined {
+    background: transparent;
+    border: 1px solid rgb(var(--m3-outline-variant));
+    border-radius: var(--radius-card);
+  }
+
+  /* M3 nav rail / navigation drawer */
+  .m3-nav {
+    background: rgb(var(--m3-surface));
+    border: none;
+  }
+
+  /* M3 top app bar */
+  .m3-topbar {
+    background: rgb(var(--m3-surface));
+    box-shadow: var(--m3-elevation-0);
+  }
+
+  /* M3 bottom navigation bar */
+  .m3-bottombar {
+    background: rgb(var(--m3-surface-container));
+    border-top: none;
+    box-shadow: var(--m3-elevation-2);
+  }
+
+  /* M3 filled button */
+  .m3-btn-filled {
+    background: rgb(var(--m3-primary));
+    color: rgb(var(--m3-on-primary));
+    border: none;
+    border-radius: var(--radius-btn);
+    box-shadow: var(--m3-elevation-0);
+    transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1),
+                background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-btn-filled:hover {
+    box-shadow: var(--m3-elevation-1);
+  }
+
+  /* M3 tonal button */
+  .m3-btn-tonal {
+    background: rgb(var(--m3-secondary-container));
+    color: rgb(var(--m3-on-secondary-container));
+    border: none;
+    border-radius: var(--radius-btn);
+    box-shadow: var(--m3-elevation-0);
+    transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-btn-tonal:hover {
+    box-shadow: var(--m3-elevation-1);
+  }
+
+  /* M3 outlined button */
+  .m3-btn-outlined {
+    background: transparent;
+    color: rgb(var(--m3-primary));
+    border: 1px solid rgb(var(--m3-outline));
+    border-radius: var(--radius-btn);
+    transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* M3 text button */
+  .m3-btn-text {
+    background: transparent;
+    color: rgb(var(--m3-primary));
+    border: none;
+    border-radius: var(--radius-btn);
+    transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  /* M3 input field (outlined) */
+  .m3-input {
+    background: transparent;
+    border: 1px solid rgb(var(--m3-outline));
+    border-radius: var(--radius-input);
+    color: rgb(var(--m3-on-surface));
+    transition: border-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-input:focus {
+    border-color: rgb(var(--m3-primary));
+    border-width: 2px;
+  }
+
+  /* M3 chip */
+  .m3-chip {
+    background: transparent;
+    border: 1px solid rgb(var(--m3-outline));
+    border-radius: var(--radius-chip);
+    color: rgb(var(--m3-on-surface));
+    transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-chip-selected {
+    background: rgb(var(--m3-secondary-container));
+    border-color: transparent;
+    color: rgb(var(--m3-on-secondary-container));
+  }
+
+  /* M3 bottom sheet */
+  .m3-bottom-sheet {
+    background: rgb(var(--m3-surface-container-low));
+    border-radius: var(--radius-bottomsheet);
+    box-shadow: var(--m3-elevation-3);
+  }
+
+  /* M3 FAB */
+  .m3-fab {
+    background: rgb(var(--m3-primary-container));
+    color: rgb(var(--m3-on-primary-container));
+    border: none;
+    border-radius: var(--m3-shape-lg);
+    box-shadow: var(--m3-elevation-3);
+    transition: box-shadow 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-fab:hover {
+    box-shadow: var(--m3-elevation-4);
+  }
+
+  /* M3 switch track */
+  .m3-switch-track {
+    background: rgb(var(--m3-surface-container-highest));
+    border: 2px solid rgb(var(--m3-outline));
+    border-radius: var(--m3-shape-full);
+    transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1),
+                border-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-switch-track-active {
+    background: rgb(var(--m3-primary));
+    border-color: rgb(var(--m3-primary));
+  }
+
+  /* M3 switch handle */
+  .m3-switch-handle {
+    background: rgb(var(--m3-outline));
+    border-radius: var(--m3-shape-full);
+    transition: background-color 200ms cubic-bezier(0.2, 0, 0, 1),
+                width 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .m3-switch-handle-active {
+    background: rgb(var(--m3-on-primary));
+    width: 24px;
+  }
+
+  /* M3 ripple effect placeholder */
+  .m3-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .m3-ripple::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
+      rgb(var(--m3-on-surface)) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 300ms;
+    pointer-events: none;
+  }
+
+  .m3-ripple:active::after {
+    opacity: var(--m3-state-pressed);
+  }
+}

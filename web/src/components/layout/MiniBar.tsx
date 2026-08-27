@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/Button";
 import { useUiStore } from "@/store/uiStore";
 
 /**
- * Persistent bottom mini-bar (Section 6.6) — Spotify now-playing / YouTube
- * mini-player analog. Reflects the current active session on every screen with a
- * quick Resume action. Chrome-gradient cube swatch is the one chrome touch here.
+ * Persistent bottom mini-bar — Spotify now-playing analog.
+ * Reflects the current active session on every screen.
  */
 export function MiniBar() {
   const session = useUiStore((s) => s.session);
@@ -15,8 +14,8 @@ export function MiniBar() {
   if (!session) return null;
 
   return (
-    <div className="shrink-0 border-t border-border-subtle px-4 py-3 md:px-8">
-      <div className="flex items-center gap-4 rounded-xl border border-border bg-surface-raised px-3 py-2.5">
+    <div className="cubr-bottombar shrink-0 px-4 py-3 md:px-8 hidden md:block">
+      <div className="cubr-surface flex items-center gap-4 px-3 py-2.5">
         <ChromeCube size={44} radiusClass="rounded-md" />
 
         <div className="min-w-0">

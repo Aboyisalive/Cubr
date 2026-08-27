@@ -2,12 +2,12 @@ import { Bell, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 /**
- * Top bar (Section 6.3): search field + notifications icon + avatar.
- * Shares the single app background; only the search input is an elevated surface.
+ * Top bar: search field + notifications icon + avatar.
+ * Uses theme-aware .cubr-topbar class from globals.css.
  */
 export function TopBar() {
   return (
-    <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-border-subtle bg-bg-default/90 px-4 py-3 backdrop-blur md:px-8">
+    <header className="cubr-topbar sticky top-0 z-20 flex items-center gap-4 px-4 py-3 md:px-8">
       <label className="relative flex-1 max-w-md">
         <Search
           size={18}
@@ -16,7 +16,7 @@ export function TopBar() {
         <input
           type="search"
           placeholder="Search algorithms, guides, solves…"
-          className="h-10 w-full rounded-lg border border-border bg-surface-raised pl-10 pr-4 text-body-sm text-text-primary placeholder:text-text-tertiary outline-none transition-colors focus:border-brand"
+          className="cubr-input h-10 w-full pl-10 pr-4 text-body-sm text-text-primary placeholder:text-text-tertiary outline-none"
         />
       </label>
 

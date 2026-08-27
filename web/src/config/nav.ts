@@ -1,4 +1,4 @@
-import { Home, Boxes, GraduationCap, Gauge, Palette, type LucideIcon } from "lucide-react";
+import { Home, Boxes, GraduationCap, Gauge, Palette, Settings, type LucideIcon } from "lucide-react";
 
 export interface NavDestination {
   label: string;
@@ -7,9 +7,8 @@ export interface NavDestination {
 }
 
 /**
- * Nav items are DESTINATIONS you browse and return to (Section 6.2).
- * Actions the user triggers (Scan Cube) are CTA buttons, NOT nav items —
- * see the Scan Cube CTA rendered above this list in the sidebar.
+ * Nav items are DESTINATIONS you browse and return to.
+ * Actions the user triggers (Scan Cube) are CTA buttons, NOT nav items.
  */
 export const NAV_DESTINATIONS: NavDestination[] = [
   { label: "Home", to: "/app", icon: Home },
@@ -17,4 +16,5 @@ export const NAV_DESTINATIONS: NavDestination[] = [
   { label: "Guide", to: "/app/guide", icon: GraduationCap },
   { label: "Pro Mode", to: "/app/pro", icon: Gauge },
   { label: "Themes", to: "/app/themes", icon: Palette },
+  { label: "Settings", to: "/app/settings", icon: Settings },
 ];

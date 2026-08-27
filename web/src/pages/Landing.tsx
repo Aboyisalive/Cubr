@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Boxes, Gauge, GraduationCap, Mail, ScanLine, Timer } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
@@ -23,6 +23,11 @@ export default function Landing() {
     setScrollProgress(range > 0 ? element.scrollTop / range : 0);
   }, []);
 
+  const scrollToStory = useCallback((event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    scrollRef.current?.querySelector("#story")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   useEffect(() => {
     const element = scrollRef.current;
     if (!element) return;
@@ -39,9 +44,9 @@ export default function Landing() {
 
       <div ref={scrollRef} className="relative z-10 h-full overflow-y-auto overflow-x-hidden text-white">
         <header className="mx-auto flex max-w-7xl items-center px-5 py-6 sm:px-8 lg:px-12">
-          <Logo className="[&>span]:text-white" />
+          <Logo compact className="[&>span]:text-white" />
           <div className="ml-auto flex items-center gap-2 sm:gap-4">
-            <a className="hidden text-label-md text-white/55 transition-colors hover:text-white sm:block" href="#story">Explore</a>
+            <a className="hidden text-label-md text-white/55 transition-colors hover:text-white sm:block" href="#story" onClick={scrollToStory}>Explore</a>
             <a href="mailto:hello@cubr.app?subject=CUBR%20waitlist"><Button className="gap-2"><Mail size={15} />Join waitlist</Button></a>
           </div>
         </header>
@@ -54,7 +59,7 @@ export default function Landing() {
               <p className="type-body-lg mt-8 max-w-md text-white/58">A precision companion for the first solve, the next personal best, and everything between.</p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 <a href="mailto:hello@cubr.app?subject=CUBR%20waitlist"><Button size="lg" className="gap-2"><Mail size={18} />Join the waitlist</Button></a>
-                <a href="#story" className="inline-flex items-center gap-2 text-label-lg text-white/70 transition-colors hover:text-white">See what it does <ArrowRight size={17} /></a>
+                <a href="#story" onClick={scrollToStory} className="inline-flex items-center gap-2 text-label-lg text-white/70 transition-colors hover:text-white">See what it does <ArrowRight size={17} /></a>
               </div>
             </div>
           </section>
@@ -86,7 +91,7 @@ export default function Landing() {
 
         <footer className="border-t border-white/10">
           <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-body-sm text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
-            <Logo withWordmark className="[&>span]:text-white" />
+            <Logo withWordmark compact className="[&>span]:text-white" />
             <div className="flex gap-6"><span>Privacy</span><span>Terms</span><span>© 2026 cubr</span></div>
           </div>
         </footer>

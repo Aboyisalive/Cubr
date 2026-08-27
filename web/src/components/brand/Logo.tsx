@@ -3,12 +3,13 @@ import logoImg from "@/assets/logo.png";
 
 interface LogoProps {
   withWordmark?: boolean;
+  compact?: boolean;
   className?: string;
 }
 
-export function Logo({ withWordmark = true, className }: LogoProps) {
+export function Logo({ withWordmark = true, compact = false, className }: LogoProps) {
   return (
-    <div className={cn("flex items-center gap-3 select-none", className)}>
+    <div className={cn("flex items-center select-none", compact ? "gap-1.5" : "gap-3", className)}>
       <img
         src={logoImg}
         alt="cubr logo"

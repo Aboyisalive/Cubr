@@ -31,7 +31,7 @@ float fbm(vec2 p) {
 
 void main() {
   vec2 p = (vUv - .5) * vec2(uResolution.x / uResolution.y, 1.);
-  float t = uTime * .035;
+  float t = uTime * .04375;
   vec2 motion = vec2(fbm(p * .9 + vec2(t, -t * .48)), fbm(p * .9 + vec2(8.3 - t * .38, 3.7 + t))) - .5;
   p += motion * .14 + uMouse * .012;
 
@@ -42,9 +42,20 @@ void main() {
   float dA = abs(foldA), dB = abs(foldB), dC = abs(foldC);
   float nearestFold = min(dA, min(dB, dC));
 
-  float mass = smoothstep(.025, .48, nearestFold);
-  float softRim = exp(-nearestFold * 15.) * .16;
-  float hardRim = exp(-dA * 92.) + exp(-dB * 78.) * .82 + exp(-dC * 110.) * .42;
+  // Large, overlapping liquid-glass pockets break up the linear seams into rounded masses.
+  vec2 bubbleA = vec2(-.48, .13) + vec2(sin(t * 1.1), cos(t * .8)) * .06;
+  vec2 bubbleB = vec2(.54, -.34) + vec2(cos(t * .75), sin(t * 1.05)) * .07;
+  vec2 bubbleC = vec2(.18, .64) + vec2(sin(t * .6), cos(t * .92)) * .05;
+  float bubbleOne = length((p - bubbleA) * vec2(.78, 1.18)) - .57;
+  float bubbleTwo = length((p - bubbleB) * vec2(1.12, .72)) - .51;
+  float bubbleThree = length((p - bubbleC) * vec2(.68, 1.34)) - .46;
+  float nearestBubble = min(abs(bubbleOne), min(abs(bubbleTwo), abs(bubbleThree)));
+  float glassPocket = 1. - smoothstep(.02, .48, min(bubbleOne, min(bubbleTwo, bubbleThree)));
+
+  float mass = max(smoothstep(.025, .48, nearestFold), glassPocket * .82);
+  float softRim = exp(-nearestFold * 15.) * .055 + exp(-nearestBubble * 10.) * .15;
+  float hardRim = (exp(-dA * 92.) + exp(-dB * 78.) * .82 + exp(-dC * 110.) * .42) * .26;
+  hardRim += exp(-nearestBubble * 56.) * .9;
   float sheen = fbm(p * 2.6 + vec2(t * 2., -t)) * .035;
 
   vec3 black = vec3(.001, .002, .005);
@@ -54,8 +65,8 @@ void main() {
   vec3 white = vec3(.93, .97, 1.);
   vec3 color = mix(black, graphite, mass * (.48 + sheen));
   color += blueChrome * softRim;
-  color += silver * hardRim * .46;
-  color += white * pow(hardRim, 3.) * .52;
+  color += silver * hardRim * .43;
+  color += white * pow(hardRim, 3.) * .44;
 
   // CUBR orange only exists as a fleeting reflection in one narrow seam.
   float warmth = exp(-dB * 170.) * (.012 + smoothstep(.72, 1., uScroll) * .016);

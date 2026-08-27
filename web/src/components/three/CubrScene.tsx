@@ -1,5 +1,5 @@
-import { useRef, useState, useCallback, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useEffect, useState } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { LiquidChrome } from "./LiquidChrome";
 import { CubrCube } from "./CubrCube";
@@ -12,13 +12,14 @@ const R3FCanvas = Canvas as any;
    Smooth mouse tracker
    ================================================================ */
 
-function MouseTracker({ onMove }: { onMove: (v: THREE.Vector2) => void }) {
+function MouseTracker({ mouseNDC }: { mouseNDC: THREE.Vector2 }) {
   const target = useRef(new THREE.Vector2(0, 0));
   const smooth = useRef(new THREE.Vector2(0, 0));
+  const invalidate = useThree((state) => state.invalidate);
 
   useFrame(() => {
     smooth.current.lerp(target.current, 0.04);
-    onMove(smooth.current);
+    mouseNDC.copy(smooth.current);
   });
 
   useEffect(() => {
@@ -27,6 +28,7 @@ function MouseTracker({ onMove }: { onMove: (v: THREE.Vector2) => void }) {
         (e.clientX / window.innerWidth) * 2 - 1,
         -(e.clientY / window.innerHeight) * 2 + 1,
       );
+      invalidate();
     };
     window.addEventListener("pointermove", handler, { passive: true });
     return () => window.removeEventListener("pointermove", handler);
@@ -44,51 +46,30 @@ interface SceneContentsProps {
   scrollProgress: number;
 }
 
-function SceneContents({ mouseNDC, scrollProgress }: SceneContentsProps) {
-  const groupRef = useRef<THREE.Group>(null);
+function CubeStory({ mouseNDC, scrollProgress }: SceneContentsProps) {
+  const ref = useRef<THREE.Group>(null);
+  const reveal = THREE.MathUtils.smoothstep(scrollProgress, 0.08, 0.2);
+  const solveProgress = THREE.MathUtils.clamp((scrollProgress - 0.2) / 0.72, 0, 1);
 
-  // Cube drifts down and scales as user scrolls
-  useFrame(() => {
-    if (!groupRef.current) return;
-    // Subtle positional drift based on scroll
-    groupRef.current.position.y = -scrollProgress * 0.5;
+  useFrame((_, delta) => {
+    if (!ref.current) return;
+    const targetX = scrollProgress < 0.42 ? 1.05 : scrollProgress < 0.76 ? -0.85 : 0.48;
+    const targetY = scrollProgress < 0.42 ? 0.05 : scrollProgress < 0.76 ? -0.36 : 0.1;
+    ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, targetX, 1.5, delta);
+    ref.current.position.y = THREE.MathUtils.damp(ref.current.position.y, targetY, 1.5, delta);
+    ref.current.scale.setScalar(THREE.MathUtils.damp(ref.current.scale.x, 0.92 * reveal, 1.8, delta));
   });
 
+  return <group ref={ref} scale={0.001}><CubrCube scrollProgress={solveProgress} mouseNDC={mouseNDC} scale={1} /></group>;
+}
+
+function SceneContents({ mouseNDC, scrollProgress }: SceneContentsProps) {
   return (
     <>
-      {/* Lighting — chrome reflections */}
-      <ambientLight intensity={0.15} />
-      <directionalLight position={[5, 8, 6]} intensity={1.4} color="#e8eaf0" />
-      <directionalLight position={[-4, -3, -5]} intensity={0.4} color="#8899cc" />
-      <pointLight position={[0, 5, 3]} intensity={0.6} color="#ffffff" distance={20} />
-      <pointLight position={[-3, -2, 4]} intensity={0.3} color="#aabbcc" distance={15} />
-
-      {/* Orange accent light — intensifies with solve progress */}
-      <pointLight
-        position={[3, 2, 5]}
-        intensity={0.15 + scrollProgress * 0.6}
-        color="#FF6B0F"
-        distance={18}
-      />
-      <pointLight
-        position={[-2, -3, 4]}
-        intensity={0.05 + scrollProgress * 0.3}
-        color="#FF8533"
-        distance={14}
-      />
-
-      {/* Liquid chrome environment */}
+      {/* Layer 0: liquid chrome. Layer 1 enters after the opening atmosphere. */}
       <LiquidChrome mouseNDC={mouseNDC} scrollProgress={scrollProgress} />
+      <CubeStory mouseNDC={mouseNDC} scrollProgress={scrollProgress} />
 
-      {/* Giant cube */}
-      <group ref={groupRef}>
-        <CubrCube
-          scrollProgress={scrollProgress}
-          mouseNDC={mouseNDC}
-          position={[0, 0, 0]}
-          scale={1.3}
-        />
-      </group>
     </>
   );
 }
@@ -103,10 +84,21 @@ export interface CubrSceneProps {
 }
 
 export function CubrScene({ scrollProgress, className }: CubrSceneProps) {
-  const [mouseNDC, setMouseNDC] = useState(() => new THREE.Vector2(0, 0));
+  const mouseNDC = useRef(new THREE.Vector2(0, 0));
+  const [isVisible, setIsVisible] = useState(() => document.visibilityState === "visible");
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-  const handleMouseMove = useCallback((v: THREE.Vector2) => {
-    setMouseNDC(v.clone());
+  useEffect(() => {
+    const syncVisibility = () => setIsVisible(document.visibilityState === "visible");
+    document.addEventListener("visibilitychange", syncVisibility);
+    return () => document.removeEventListener("visibilitychange", syncVisibility);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotionPreference = () => setReducedMotion(media.matches);
+    media.addEventListener("change", syncMotionPreference);
+    return () => media.removeEventListener("change", syncMotionPreference);
   }, []);
 
   return (
@@ -119,12 +111,13 @@ export function CubrScene({ scrollProgress, className }: CubrSceneProps) {
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.1,
       }}
-      dpr={[1, 1.5]}
+      dpr={[1, window.innerWidth < 768 || reducedMotion ? 1 : 1.5]}
+      frameloop={isVisible ? (reducedMotion ? "demand" : "always") : "never"}
       style={{ background: "#000" }}
       className={className}
     >
-      <MouseTracker onMove={handleMouseMove} />
-      <SceneContents mouseNDC={mouseNDC} scrollProgress={scrollProgress} />
+      <MouseTracker mouseNDC={mouseNDC.current} />
+      <SceneContents mouseNDC={mouseNDC.current} scrollProgress={scrollProgress} />
     </R3FCanvas>
   );
 }

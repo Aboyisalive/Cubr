@@ -2,7 +2,6 @@ import { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { LiquidChrome } from "./LiquidChrome";
-import { CubrCube } from "./CubrCube";
 
 // R3F Canvas type workaround
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,30 +45,10 @@ interface SceneContentsProps {
   scrollProgress: number;
 }
 
-function CubeStory({ mouseNDC, scrollProgress }: SceneContentsProps) {
-  const ref = useRef<THREE.Group>(null);
-  const reveal = THREE.MathUtils.smoothstep(scrollProgress, 0.08, 0.2);
-  const solveProgress = THREE.MathUtils.clamp((scrollProgress - 0.2) / 0.72, 0, 1);
-
-  useFrame((_, delta) => {
-    if (!ref.current) return;
-    const targetX = scrollProgress < 0.42 ? 1.05 : scrollProgress < 0.76 ? -0.85 : 0.48;
-    const targetY = scrollProgress < 0.42 ? 0.05 : scrollProgress < 0.76 ? -0.36 : 0.1;
-    ref.current.position.x = THREE.MathUtils.damp(ref.current.position.x, targetX, 1.5, delta);
-    ref.current.position.y = THREE.MathUtils.damp(ref.current.position.y, targetY, 1.5, delta);
-    ref.current.scale.setScalar(THREE.MathUtils.damp(ref.current.scale.x, 0.92 * reveal, 1.8, delta));
-  });
-
-  return <group ref={ref} scale={0.001}><CubrCube scrollProgress={solveProgress} mouseNDC={mouseNDC} scale={1} /></group>;
-}
-
 function SceneContents({ mouseNDC, scrollProgress }: SceneContentsProps) {
   return (
     <>
-      {/* Layer 0: liquid chrome. Layer 1 enters after the opening atmosphere. */}
       <LiquidChrome mouseNDC={mouseNDC} scrollProgress={scrollProgress} />
-      <CubeStory mouseNDC={mouseNDC} scrollProgress={scrollProgress} />
-
     </>
   );
 }

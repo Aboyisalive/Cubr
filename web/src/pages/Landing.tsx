@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Boxes, Gauge, GraduationCap, Mail, ScanLine, Timer } from "lucide-react";
+import { ArrowRight, Boxes, GraduationCap, Mail, ScanLine, Timer } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
 import { CubrScene } from "@/components/three/CubrScene";

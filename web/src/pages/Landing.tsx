@@ -53,7 +53,7 @@ export default function Landing() {
 
         <main>
           <section className="mx-auto flex min-h-[88vh] max-w-7xl items-center px-5 pb-16 pt-10 sm:px-8 lg:px-12">
-            <div className="max-w-2xl">
+            <div className="landing-copy max-w-2xl">
               <p className="type-caption mb-6 text-[#ff6b0f]">CUBR / THE CUBE, RECONSIDERED</p>
               <h1 className="font-display text-[clamp(3.25rem,8vw,7.5rem)] font-bold leading-[0.92] tracking-[-0.065em] text-white">Scan, solve,<br />and master<br />the cube.</h1>
               <p className="type-body-lg mt-8 max-w-md text-white/58">A precision companion for the first solve, the next personal best, and everything between.</p>
@@ -67,7 +67,7 @@ export default function Landing() {
           <section id="story" className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
             {FLIERS.map(({ number, icon: Icon, kicker, title, body, label }, index) => (
               <article key={number} className={`relative flex min-h-[82vh] items-center border-t border-white/12 py-20 ${index % 2 ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-xl ${index % 2 ? "lg:mr-[8%]" : "lg:ml-[4%]"}`}>
+                <div className={`landing-copy max-w-xl ${index % 2 ? "lg:mr-[8%]" : "lg:ml-[4%]"}`}>
                   <div className="mb-10 flex items-center gap-4 text-white/42"><span className="font-display text-2xl tracking-[-0.05em]">{number}</span><span className="h-px w-12 bg-white/25" /><Icon size={18} /></div>
                   <p className="type-caption text-[#ff6b0f]">{kicker}</p>
                   <h2 className="mt-5 font-display text-[clamp(2.6rem,5.4vw,5.5rem)] font-bold leading-[0.96] tracking-[-0.06em] text-white">{title}</h2>
@@ -80,7 +80,7 @@ export default function Landing() {
 
           <section className="mx-auto flex min-h-[88vh] max-w-7xl items-end px-5 pb-20 pt-28 sm:px-8 lg:px-12">
             <div className="w-full border-t border-white/15 pt-10 sm:flex sm:items-end sm:justify-between">
-              <div className="max-w-2xl">
+              <div className="landing-copy max-w-2xl">
                 <p className="type-caption text-[#ff6b0f]">YOUR NEXT SOLVE STARTS HERE</p>
                 <h2 className="mt-5 font-display text-[clamp(3rem,6vw,6.25rem)] font-bold leading-[0.93] tracking-[-0.07em]">Find the move<br />that changes everything.</h2>
               </div>

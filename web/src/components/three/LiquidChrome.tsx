@@ -42,7 +42,6 @@ void main() {
   float ribbonDistance = abs(p.y - wave);
   float ribbon = 1. - smoothstep(.22, .31, ribbonDistance);
   float edge = exp(-pow(ribbonDistance - .255, 2.) * 1800.);
-  float innerEdge = exp(-pow(ribbonDistance - .17, 2.) * 420.);
 
   // Moving reflection bands provide the bright, liquid-metal read.
   float reflection = .5 + .5 * sin(
@@ -50,25 +49,25 @@ void main() {
   );
   reflection = pow(reflection, 5.);
   float broadReflection = .5 + .5 * sin(p.x * 7. - t * 1.1 + p.y * 5.);
-  float texture = fbm(vec2(p.x * 3.2 - t * .2, p.y * 2.6 + t * .14));
+  float orangeGlint = exp(-pow(ribbonDistance - .17, 2.) * 1100.)
+    * (0.35 + 0.65 * (.5 + .5 * sin(p.x * 3.2 - t * .9)));
 
   vec3 black = vec3(.001, .002, .004);
   vec3 deepBlue = vec3(.008, .025, .055);
-  vec3 chromeBlue = vec3(.24, .53, .78);
-  vec3 silver = vec3(.68, .78, .88);
+  vec3 orangeChrome = vec3(.95, .25, .035);
+  vec3 silver = vec3(.68, .76, .84);
   vec3 highlight = vec3(.96, .985, 1.);
   vec3 metal = mix(deepBlue, silver, reflection * .72 + broadReflection * .16);
-  metal = mix(metal, chromeBlue, smoothstep(.25, .72, texture) * .38);
 
   vec3 color = black;
   color += metal * ribbon;
-  color += chromeBlue * innerEdge * .55;
+  color += orangeChrome * orangeGlint * .28;
   color += silver * edge * (.65 + reflection * .5);
   color += highlight * pow(edge, 2.) * .5;
 
-  // Keep CUBR orange as a restrained, occasional reflection.
-  color += vec3(1., .24, .035) * edge
-    * (.012 + smoothstep(.72, 1., uScroll) * .014);
+  // CUBR orange stays a narrow, moving reflection rather than a surface tint.
+  color += orangeChrome * edge
+    * (.012 + smoothstep(.72, 1., uScroll) * .01);
 
   float vignette = 1. - smoothstep(.42, 1.2, length(p * vec2(.72, 1.)));
   gl_FragColor = vec4(color * (.42 + vignette * .58), 1.);

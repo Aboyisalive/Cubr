@@ -297,6 +297,39 @@
 }
 
 @layer components {
+  /* Localized contrast veil keeps landing copy readable over moving chrome. */
+  .landing-copy {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .landing-copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -2rem -3rem;
+    border-radius: 3rem;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.74) 0%,
+      rgba(0, 0, 0, 0.5) 48%,
+      rgba(0, 0, 0, 0) 82%
+    );
+    filter: blur(10px);
+    pointer-events: none;
+  }
+
+  .landing-copy h1,
+  .landing-copy h2 {
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.72);
+  }
+
+  .landing-copy p:not(.type-caption),
+  .landing-copy a,
+  .landing-copy span {
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+  }
+
   /* ---- Type styles ---- */
   .type-display-lg { @apply font-display text-display-lg; }
   .type-display-sm { @apply font-display text-display-sm; }

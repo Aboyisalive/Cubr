@@ -24,6 +24,7 @@ func New(d *handlers.Deps, corsOrigin string) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"ok":true}`))
 	})
+	mux.HandleFunc("POST /api/waitlist", d.Waitlist)
 
 	MountSolver(mux, d)
 

@@ -8,9 +8,11 @@ import type { Algorithm } from "@shared/types/algorithm";
 import type { ValidationResult } from "@shared/types/cube_state";
 import { SOLVED_FACELETS } from "@shared/types/cube_state";
 import type { Shelf } from "@/types/home";
+import type { WaitlistSignupResponse } from "@shared/types/waitlist";
 import { ENDPOINTS } from "./endpoints";
 
 const NETWORK_DELAY_MS = 320;
+let mockWaitlistPosition = 0;
 
 const stats: ProfileStats = {
   totalSolves: 1284,
@@ -99,6 +101,12 @@ export function mockResolve<T>(method: string, path: string, _body?: unknown): P
   }
   if (route === "POST /api/auth/logout") {
     return delay({ ok: true } as unknown as T);
+  }
+  if (route === `POST ${ENDPOINTS.waitlistJoin}`) {
+    return delay({
+      id: `w_mock_${++mockWaitlistPosition}`,
+      position: mockWaitlistPosition,
+    } as WaitlistSignupResponse as unknown as T);
   }
 
   switch (route) {

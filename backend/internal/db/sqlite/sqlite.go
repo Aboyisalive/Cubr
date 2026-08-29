@@ -24,6 +24,7 @@ var migrationsFS embed.FS
 
 var ErrNotFound = errors.New("db: not found")
 var ErrDuplicateEmail = errors.New("db: email already registered")
+var ErrDuplicateWaitlistEmail = errors.New("db: waitlist email already registered")
 
 // Store wraps the SQLite handle with the app's queries.
 type Store struct {
@@ -149,6 +150,42 @@ func (s *Store) ListUserIDs(ctx context.Context) ([]string, error) {
 		ids = append(ids, id)
 	}
 	return ids, rows.Err()
+}
+
+func (s *Store) InsertWaitlistSignup(ctx context.Context, signup models.WaitlistSignup, name, email, createdAt string) (models.WaitlistSignup, error) {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return models.WaitlistSignup{}, err
+	}
+	defer tx.Rollback()
+	if _, err = tx.ExecContext(ctx,
+		`INSERT INTO waitlist (id, name, email, created_at) VALUES (?, ?, ?, ?)`,
+		signup.ID, name, email, createdAt); err != nil {
+		if strings.Contains(strings.ToUpper(err.Error()), "UNIQUE") {
+			return models.WaitlistSignup{}, ErrDuplicateWaitlistEmail
+		}
+		return models.WaitlistSignup{}, err
+	}
+	if err = tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM waitlist`).Scan(&signup.Position); err != nil {
+		return models.WaitlistSignup{}, err
+	}
+	if err = tx.Commit(); err != nil {
+		return models.WaitlistSignup{}, err
+	}
+	return signup, nil
+}
+
+func (s *Store) WaitlistSignupByEmail(ctx context.Context, email string) (models.WaitlistSignup, error) {
+	var signup models.WaitlistSignup
+	err := s.db.QueryRowContext(ctx,
+		`SELECT id, (SELECT COUNT(*) FROM waitlist w2 WHERE w2.created_at < w.created_at OR
+			(w2.created_at = w.created_at AND w2.id <= w.id))
+		 FROM waitlist w WHERE email = ?`, email).
+		Scan(&signup.ID, &signup.Position)
+	if errors.Is(err, sql.ErrNoRows) {
+		return models.WaitlistSignup{}, ErrNotFound
+	}
+	return signup, err
 }
 
 // --- solves ----------------------------------------------------------------

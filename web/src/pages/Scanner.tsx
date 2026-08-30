@@ -1,6 +1,8 @@
 import { ArrowRight, Camera, Check, ScanLine, Video, Webcam } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCamera } from "@/hooks/useCamera";
+import { useUiStore } from "@/store/uiStore";
 
 type FaceId = "U" | "R" | "F" | "D" | "L" | "B";
 type FaceGrid = Array<Array<string>>;
@@ -56,6 +58,8 @@ function buildFacelets(captureMap: Record<FaceId, FaceGrid>) {
 }
 
 export default function Scanner() {
+  const navigate = useNavigate();
+  const setSession = useUiStore((state) => state.setSession);
   const {
     videoRef,
     devices,
@@ -286,6 +290,13 @@ export default function Scanner() {
       }
       setSolve(payload);
       setStatus(`${solveMethod === "beginner" ? "Beginner method" : "Kociemba"} solved: ${payload.solution || "no moves needed"}`);
+      setSession({
+        id: "scanned-cube",
+        label: "Scanned cube",
+        detail: `${payload.method} · ${payload.moveCount} moves`,
+        facelets,
+      });
+      navigate("/app/solver");
     } catch {
       setSolve(null);
       setValidation({ valid: false, message: "Backend solver is unavailable at localhost:8080." });

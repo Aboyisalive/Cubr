@@ -15,6 +15,7 @@ export const ENDPOINTS = {
 
   // Guide / Pro Mode — algorithm library
   algorithms: "/api/algorithms",
+  solverMethods: "/api/solver/methods",
 
   // Home dashboard shelves
   shelves: "/api/home/shelves",

@@ -9,6 +9,12 @@ type User struct {
 	DisplayName string `json:"displayName"`
 }
 
+// WaitlistSignup mirrors shared/types/waitlist.ts WaitlistSignupResponse.
+type WaitlistSignup struct {
+	ID       string `json:"id"`
+	Position int    `json:"position"`
+}
+
 // SolveRecord mirrors shared/types/solve_record.ts SolveRecord.
 type SolveRecord struct {
 	ID        string   `json:"id"`

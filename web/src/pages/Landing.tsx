@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react
 import { ArrowRight, Boxes, GraduationCap, Mail, ScanLine, Timer } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
+import { WaitlistForm } from "@/components/WaitlistForm";
 import { CubrScene } from "@/components/three/CubrScene";
 
 const FLIERS = [
@@ -13,6 +14,7 @@ const FLIERS = [
 
 export default function Landing() {
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback(() => {
@@ -35,6 +37,15 @@ export default function Landing() {
     return () => element.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
+  useEffect(() => {
+    if (!waitlistOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setWaitlistOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [waitlistOpen]);
+
   return (
     <div className="relative h-full overflow-hidden bg-[#020305]">
       <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
@@ -46,7 +57,7 @@ export default function Landing() {
           <Logo compact className="[&>span]:text-white" />
           <div className="ml-auto flex items-center gap-2 sm:gap-4">
             <a className="hidden text-label-md text-white/55 transition-colors hover:text-white sm:block" href="#story" onClick={scrollToStory}>Explore</a>
-            <a href="mailto:hello@cubr.app?subject=CUBR%20waitlist"><Button className="gap-2"><Mail size={15} />Join waitlist</Button></a>
+            <Button className="gap-2" onClick={() => setWaitlistOpen(true)}><Mail size={15} />Join waitlist</Button>
           </div>
         </header>
 
@@ -57,7 +68,7 @@ export default function Landing() {
               <h1 className="font-display text-[clamp(3.25rem,8vw,7.5rem)] font-bold leading-[0.92] tracking-[-0.065em] text-white">Scan, solve,<br />and master<br />the cube.</h1>
               <p className="type-body-lg mt-8 max-w-md text-white/58">A precision companion for the first solve, the next personal best, and everything between.</p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <a href="mailto:hello@cubr.app?subject=CUBR%20waitlist"><Button size="lg" className="gap-2"><Mail size={18} />Join the waitlist</Button></a>
+                <Button size="lg" className="gap-2" onClick={() => setWaitlistOpen(true)}><Mail size={18} />Join the waitlist</Button>
                 <a href="#story" onClick={scrollToStory} className="inline-flex items-center gap-2 text-label-lg text-white/70 transition-colors hover:text-white">See what it does <ArrowRight size={17} /></a>
               </div>
             </div>
@@ -83,7 +94,7 @@ export default function Landing() {
                 <p className="type-caption text-[#ff6b0f]">YOUR NEXT SOLVE STARTS HERE</p>
                 <h2 className="mt-5 font-display text-[clamp(3rem,6vw,6.25rem)] font-bold leading-[0.93] tracking-[-0.07em]">Find the move<br />that changes everything.</h2>
               </div>
-              <a className="mt-8 inline-block sm:mt-0" href="mailto:hello@cubr.app?subject=CUBR%20waitlist"><Button size="lg" className="gap-2"><Mail size={18} />Join the waitlist</Button></a>
+              <Button size="lg" className="mt-8 gap-2 sm:mt-0" onClick={() => setWaitlistOpen(true)}><Mail size={18} />Join the waitlist</Button>
             </div>
           </section>
         </main>
@@ -95,6 +106,38 @@ export default function Landing() {
           </div>
         </footer>
       </div>
+      {waitlistOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setWaitlistOpen(false);
+          }}
+        >
+          <section
+            className="landing-copy w-full max-w-md rounded-[var(--radius-card)] border border-white/20 bg-[#0b0d12]/95 p-6 shadow-2xl sm:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="waitlist-title"
+          >
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div>
+                <p className="type-caption text-[#ff6b0f]">CUBR / EARLY ACCESS</p>
+                <h2 id="waitlist-title" className="type-heading-md mt-2 text-white">Join the waitlist</h2>
+              </div>
+              <button
+                type="button"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-2xl text-white/60 hover:bg-white/10 hover:text-white"
+                aria-label="Close waitlist dialog"
+                onClick={() => setWaitlistOpen(false)}
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <WaitlistForm />
+          </section>
+        </div>
+      )}
     </div>
   );
 }

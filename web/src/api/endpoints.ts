@@ -22,6 +22,7 @@ export const ENDPOINTS = {
   // Auth
   login: "/api/auth/login",
   session: "/api/auth/session",
+  waitlistJoin: "/api/waitlist",
 } as const;
 
 export type EndpointKey = keyof typeof ENDPOINTS;

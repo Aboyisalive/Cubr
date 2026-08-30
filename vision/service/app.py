@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-from scanner import scan_image_bytes, validate_facelets
+from scanner import detect_face, scan_image_bytes, validate_facelets
 
 
 class FaceletRequest(BaseModel):
@@ -13,6 +13,13 @@ class FaceletRequest(BaseModel):
 
 
 app = FastAPI(title="Cubr Vision Scanner", version="0.1.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
@@ -33,6 +40,20 @@ async def scan_image(image: Annotated[UploadFile, File(...)]) -> dict[str, objec
     payload = await image.read()
     try:
         return scan_image_bytes(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/api/scan/frame")
+async def scan_frame(
+    face: Annotated[str, Form(...)],
+    image: Annotated[UploadFile, File(...)],
+) -> dict[str, object]:
+    if not image.filename:
+        raise HTTPException(status_code=400, detail="image frame is required")
+    payload = await image.read()
+    try:
+        return detect_face(payload, face.upper())
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 

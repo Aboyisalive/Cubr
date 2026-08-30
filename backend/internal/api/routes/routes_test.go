@@ -255,6 +255,11 @@ func TestSolverEndpoints(t *testing.T) {
 		t.Fatalf("beginner response: %+v", sol)
 	}
 
+	var methods []cubecore.Method
+	if code := c.do("GET", "/api/solver/methods", nil, &methods); code != http.StatusOK || len(methods) < 2 {
+		t.Fatalf("methods: code %d n %d", code, len(methods))
+	}
+
 	// Invalid state is a 422 with validation errors.
 	bad := models.CubeStateRequest{Facelets: "UUUUUUUUU"}
 	if code := c.do("POST", "/api/solver/solve", bad, nil); code != http.StatusUnprocessableEntity {

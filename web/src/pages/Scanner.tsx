@@ -1,5 +1,5 @@
 import { ArrowRight, Camera, Check, ScanLine, Video, Webcam } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCamera } from "@/hooks/useCamera";
 
 type FaceId = "U" | "R" | "F" | "D" | "L" | "B";
@@ -10,6 +10,8 @@ type FaceState = {
   center: FaceId;
   prompt: string;
 };
+
+type SolveMethod = "beginner" | "kociemba";
 
 const FACE_ORDER: FaceId[] = ["U", "R", "F", "D", "L", "B"];
 
@@ -72,10 +74,86 @@ export default function Scanner() {
   const [status, setStatus] = useState<string>("Waiting for a face scan.");
   const [validation, setValidation] = useState<{ valid: boolean; message: string } | null>(null);
   const [solve, setSolve] = useState<{ solution: string; moveCount: number; method: string; stages: Array<{ name: string; moves: string }> } | null>(null);
+  const [solveMethod, setSolveMethod] = useState<SolveMethod>("kociemba");
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const trackingCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [trackingBox, setTrackingBox] = useState({ left: 20, top: 20, size: 60 });
 
   const currentFace = FACE_ORDER[currentFaceIndex];
   const currentMeta = FACE_META[currentFace];
   const allComplete = useMemo(() => FACE_ORDER.every((faceId) => captureMapIsComplete(captures[faceId])), [captures]);
+
+  useEffect(() => {
+    if (!active) {
+      setTrackingBox({ left: 20, top: 20, size: 60 });
+      return;
+    }
+
+    let frameId = 0;
+    let lastUpdate = 0;
+    const track = (time: number) => {
+      const video = videoRef.current;
+      const canvas = trackingCanvasRef.current;
+      if (video && canvas && video.videoWidth > 0 && video.videoHeight > 0 && time - lastUpdate > 120) {
+        lastUpdate = time;
+        const sampleWidth = 160;
+        const sampleHeight = Math.max(1, Math.round((video.videoHeight / video.videoWidth) * sampleWidth));
+        canvas.width = sampleWidth;
+        canvas.height = sampleHeight;
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        if (context) {
+          context.drawImage(video, 0, 0, sampleWidth, sampleHeight);
+          const pixels = context.getImageData(0, 0, sampleWidth, sampleHeight).data;
+          let minX = sampleWidth;
+          let minY = sampleHeight;
+          let maxX = 0;
+          let maxY = 0;
+          let matches = 0;
+          for (let y = 0; y < sampleHeight; y += 2) {
+            for (let x = 0; x < sampleWidth; x += 2) {
+              const offset = (y * sampleWidth + x) * 4;
+              const red = pixels[offset] / 255;
+              const green = pixels[offset + 1] / 255;
+              const blue = pixels[offset + 2] / 255;
+              const value = Math.max(red, green, blue);
+              const chroma = value - Math.min(red, green, blue);
+              if (chroma < 0.16 || value < 0.22) continue;
+              matches += 1;
+              minX = Math.min(minX, x);
+              minY = Math.min(minY, y);
+              maxX = Math.max(maxX, x);
+              maxY = Math.max(maxY, y);
+            }
+          }
+          if (matches > 80) {
+            const padding = 0.08;
+            const sourceLeft = Math.max(0, minX / sampleWidth - padding);
+            const sourceTop = Math.max(0, minY / sampleHeight - padding);
+            const sourceRight = Math.min(1, maxX / sampleWidth + padding);
+            const sourceBottom = Math.min(1, maxY / sampleHeight + padding);
+            const sourceSize = Math.max(sourceRight - sourceLeft, sourceBottom - sourceTop);
+            const centerX = (sourceLeft + sourceRight) / 2;
+            const centerY = (sourceTop + sourceBottom) / 2;
+            setTrackingBox((previous) => {
+              const next = {
+                left: Math.max(2, Math.min(98 - sourceSize * 100, (centerX - sourceSize / 2) * 100)),
+                top: Math.max(2, Math.min(98 - sourceSize * 100, (centerY - sourceSize / 2) * 100)),
+                size: Math.min(96, sourceSize * 100),
+              };
+              return {
+                left: previous.left * 0.65 + next.left * 0.35,
+                top: previous.top * 0.65 + next.top * 0.35,
+                size: previous.size * 0.65 + next.size * 0.35,
+              };
+            });
+          }
+        }
+      }
+      frameId = requestAnimationFrame(track);
+    };
+    frameId = requestAnimationFrame(track);
+    return () => cancelAnimationFrame(frameId);
+  }, [active, videoRef]);
 
   function captureMapIsComplete(face: FaceGrid) {
     return face.flat().some((cell) => cell !== "") && face.every((row) => row.every((cell) => cell !== ""));
@@ -109,11 +187,60 @@ export default function Scanner() {
       setCurrentFaceIndex((index) => index + 1);
       return;
     }
-    setStatus("All six faces captured. Validate the assembled state.");
+    setStatus("All six faces captured. Validating and solving...");
+    void validateFacelets(captures);
   }
 
-  async function validateFacelets() {
-    const facelets = buildFacelets(captures);
+  async function captureCurrentFace() {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!active || !video || !canvas || video.videoWidth === 0 || video.videoHeight === 0) {
+      setStatus("Start the camera and wait for the preview before capturing.");
+      return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext("2d");
+    if (!context) {
+      setStatus("This browser cannot capture a camera frame.");
+      return;
+    }
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.9));
+    if (!blob) {
+      setStatus("Unable to capture the current camera frame.");
+      return;
+    }
+
+    const form = new FormData();
+    form.append("face", currentFace);
+    form.append("image", blob, `${currentFace.toLowerCase()}-face.jpg`);
+    setStatus(`Detecting ${currentMeta.label} face...`);
+    try {
+      const response = await fetch("http://127.0.0.1:8001/api/scan/frame", { method: "POST", body: form });
+      const payload = await response.json();
+      if (!response.ok) {
+        setStatus(payload.detail ?? "Unable to detect this face.");
+        return;
+      }
+      const detected = String(payload.facelets ?? "");
+      if (detected.length !== 9) {
+        setStatus("The detector did not find a complete 3x3 face. Reframe the cube and try again.");
+        return;
+      }
+      const next = Array.from({ length: 3 }, (_, row) => detected.slice(row * 3, row * 3 + 3).split(""));
+      setCaptures((prev) => ({ ...prev, [currentFace]: next }));
+      setStatus(`Detected ${currentMeta.label} (${Math.round(Number(payload.confidence ?? 0) * 100)}% confidence). Confirm or correct the colors, then save.`);
+    } catch (captureError) {
+      setStatus(captureError instanceof TypeError
+        ? "Scanner service unavailable. Start the vision service on 127.0.0.1:8001 and reload the page."
+        : "Unable to process this camera frame.");
+    }
+  }
+
+  async function validateFacelets(captureMap = captures) {
+    const facelets = buildFacelets(captureMap);
     if (facelets.length !== 54) {
       setValidation({ valid: false, message: "All six faces need to be filled before validation." });
       setSolve(null);
@@ -149,7 +276,7 @@ export default function Scanner() {
       const response = await fetch("http://localhost:8080/api/solver/solve", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ facelets, method: "beginner" }),
+        body: JSON.stringify({ facelets, method: solveMethod }),
       });
       const payload = await response.json();
       if (!response.ok) {
@@ -158,7 +285,7 @@ export default function Scanner() {
         return;
       }
       setSolve(payload);
-      setStatus(`Solved: ${payload.solution || "no moves needed"}`);
+      setStatus(`${solveMethod === "beginner" ? "Beginner method" : "Kociemba"} solved: ${payload.solution || "no moves needed"}`);
     } catch {
       setSolve(null);
       setValidation({ valid: false, message: "Backend solver is unavailable at localhost:8080." });
@@ -221,18 +348,40 @@ export default function Scanner() {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950">
+          <div className="relative mx-auto aspect-square w-full max-w-2xl overflow-hidden rounded-xl border border-white/10 bg-slate-950">
             {active ? (
-              <video ref={videoRef} autoPlay playsInline muted className="aspect-video w-full bg-black object-cover" />
+              <video ref={videoRef} autoPlay playsInline muted className="h-full w-full bg-black object-cover" />
             ) : (
-              <div className="flex aspect-video items-center justify-center bg-slate-950 text-slate-400">
+              <div className="flex h-full items-center justify-center bg-slate-950 text-slate-400">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <Video className="h-8 w-8 text-slate-500" />
                   <p className="max-w-md text-sm text-slate-400">Pick a webcam and line up the current face with the center marker.</p>
                 </div>
               </div>
             )}
+            {active && (
+              <div
+                className="pointer-events-none absolute rounded-xl border-2 border-emerald-300/80 transition-[left,top,width,height] duration-150"
+                style={{
+                  left: `${trackingBox.left}%`,
+                  top: `${trackingBox.top}%`,
+                  width: `${trackingBox.size}%`,
+                  height: `${trackingBox.size}%`,
+                }}
+              >
+                <div className="absolute inset-1/3 border-x border-emerald-300/50" />
+                <div className="absolute inset-y-0 left-1/3 border-l border-emerald-300/50" />
+                <div className="absolute inset-y-0 left-2/3 border-l border-emerald-300/50" />
+                <div className="absolute inset-x-0 top-1/3 border-t border-emerald-300/50" />
+                <div className="absolute inset-x-0 top-2/3 border-t border-emerald-300/50" />
+              </div>
+            )}
           </div>
+          <canvas ref={canvasRef} className="hidden" />
+          <canvas ref={trackingCanvasRef} className="hidden" />
+          <button type="button" onClick={() => void captureCurrentFace()} disabled={!active || loading} className="mt-3 w-full rounded-lg bg-emerald-500 px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50">
+            Capture {currentMeta.label} face
+          </button>
 
           {(error || loading) && (
             <div className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
@@ -256,6 +405,7 @@ export default function Scanner() {
             {currentMeta.prompt}
           </div>
 
+          <div className="mb-2 text-xs text-slate-400">Detected colors appear below. Tap any sticker to cycle its color before saving.</div>
           <div className="grid grid-cols-3 gap-2 rounded-xl border border-white/10 bg-slate-950 p-3">
             {captures[currentFace].map((row, rowIndex) =>
               row.map((cell, colIndex) => (
@@ -303,9 +453,20 @@ export default function Scanner() {
               <div className="rounded-lg border border-white/10 bg-slate-950/70 p-3 font-mono text-[11px] text-slate-200 break-all">
                 {buildFacelets(captures)}
               </div>
-              <button type="button" onClick={validateFacelets} className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-slate-200">
+              <button type="button" onClick={() => void validateFacelets()} className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-slate-200">
                 Validate + solve <ArrowRight className="h-4 w-4" />
               </button>
+              <label className="flex items-center gap-2 text-xs text-slate-300">
+                Method
+                <select
+                  value={solveMethod}
+                  onChange={(event) => setSolveMethod(event.target.value as SolveMethod)}
+                  className="rounded-lg border border-white/10 bg-slate-950 px-2 py-2 text-xs text-slate-100 outline-none"
+                >
+                  <option value="beginner">Beginner · staged</option>
+                  <option value="kociemba">Kociemba · shortest</option>
+                </select>
+              </label>
               {validation && (
                 <div className={`rounded-lg border px-3 py-2 text-sm ${validation.valid ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200" : "border-amber-500/30 bg-amber-500/10 text-amber-200"}`}>
                   {validation.message}
@@ -316,6 +477,17 @@ export default function Scanner() {
                   <div className="font-medium">Solution</div>
                   <div className="mt-1 font-mono text-xs break-all">{solve.solution}</div>
                   <div className="mt-2 text-xs text-emerald-200/90">{solve.moveCount} moves · {solve.method}</div>
+                  {solve.stages?.length > 0 && (
+                    <div className="mt-3 space-y-1 border-t border-emerald-500/20 pt-2">
+                      <div className="text-xs font-medium text-emerald-200">Stages and algorithms</div>
+                      {solve.stages.map((stage) => (
+                        <div key={stage.name} className="flex items-start justify-between gap-3 text-xs">
+                          <span className="text-emerald-200/80">{stage.name}</span>
+                          <span className="font-mono text-right text-emerald-100">{stage.moves || "—"}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

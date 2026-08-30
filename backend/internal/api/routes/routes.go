@@ -13,6 +13,7 @@ import (
 func MountSolver(mux *http.ServeMux, d *handlers.Deps) {
 	mux.HandleFunc("POST /api/solver/validate", d.Validate)
 	mux.HandleFunc("POST /api/solver/solve", d.Solve)
+	mux.HandleFunc("GET /api/solver/methods", d.Methods)
 	mux.HandleFunc("GET /api/solver/scramble", d.Scramble)
 }
 

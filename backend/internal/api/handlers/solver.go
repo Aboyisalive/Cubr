@@ -10,6 +10,11 @@ import (
 	cubecore "github.com/Aboyisalive/cubr/shared/cube-core"
 )
 
+// Methods handles GET /api/solver/methods.
+func (d *Deps) Methods(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, cubecore.Methods)
+}
+
 // Validate handles POST /api/solver/validate.
 func (d *Deps) Validate(w http.ResponseWriter, r *http.Request) {
 	var req models.CubeStateRequest

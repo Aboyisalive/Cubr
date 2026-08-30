@@ -104,6 +104,14 @@ export function useCamera() {
 
   useEffect(() => () => stop(), [stop]);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    if (!active || !video || !stream) return;
+    video.srcObject = stream;
+    void video.play().catch(() => undefined);
+  }, [active]);
+
   return {
     videoRef,
     devices,

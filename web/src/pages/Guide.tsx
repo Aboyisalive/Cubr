@@ -1,8 +1,9 @@
-import { Check, Clock3, GraduationCap, Pause, Play, RotateCcw } from "lucide-react";
+import { Check, Clock3, Pause, Play, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { Algorithm, AlgSet } from "@shared/types/algorithm";
 import { api } from "@/api/client";
 import { ENDPOINTS } from "@/api/endpoints";
+import { StatCard } from "@/components/dashboard/StatCard";
 
 type MethodId = "beginner" | "cfop" | "roux";
 
@@ -40,6 +41,12 @@ const METHOD_LABELS: Record<MethodId, string> = {
   roux: "Roux",
 };
 
+const METHOD_DESCRIPTIONS: Record<MethodId, string> = {
+  beginner: "Fundamentals first, with clear staged goals.",
+  cfop: "Fast, structured, and built around recognition.",
+  roux: "Block-based solving with an efficient endgame.",
+};
+
 function formatTime(milliseconds: number) {
   return `${(milliseconds / 1000).toFixed(2)}s`;
 }
@@ -63,6 +70,8 @@ export default function Guide() {
   const selected = cases.find((algorithm) => algorithm.id === selectedId) ?? cases[0];
   const running = startedAt !== null;
   const attempts = selected ? attemptsByAlgorithm[selected.id] ?? [] : [];
+  const totalAttempts = Object.values(attemptsByAlgorithm).reduce((sum, list) => sum + list.length, 0);
+  const methodCaseCount = algorithms.filter((algorithm) => stages.some((stageItem) => stageItem.sets.includes(algorithm.set))).length;
 
   useEffect(() => {
     setStageId(METHOD_STAGES[method][0].id);
@@ -145,139 +154,158 @@ export default function Guide() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-4 md:p-8">
-      <div className="flex items-center gap-3">
-        <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-300"><GraduationCap className="h-7 w-7" /></div>
-        <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-emerald-300/80">Guide engine</p>
-          <h1 className="text-2xl font-semibold">Learn by method and stage</h1>
-        </div>
+    <div className="flex flex-col gap-10 px-4 py-6 md:px-8">
+      <header className="flex flex-col gap-1">
+        <p className="type-caption text-text-tertiary">Wednesday · 22 Jul</p>
+        <h1 className="type-heading-lg text-text-primary">Method guide</h1>
+      </header>
+
+      <div className="flex flex-wrap gap-4">
+        <StatCard label="Methods" value={String(Object.keys(METHOD_LABELS).length)} />
+        <StatCard label="Stages" value={String(stages.length)} />
+        <StatCard label="Cases" value={String(methodCaseCount)} />
+        <StatCard label="Practice" value={String(totalAttempts)} hint="tries" />
       </div>
 
-      {method === "cfop" && (
-        <section className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5">
-          <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/80">CFOP overview</p>
-            <h2 className="mt-1 text-xl font-semibold">Cross · F2L · OLL · PLL</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-300">
-              CFOP solves the cube in four connected phases. The goal is not to memorise everything at once:
-              establish a reliable cross, learn intuitive F2L, then build your last-layer algorithm set.
-            </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                ["Cross", "Solve the four cross edges, preferably on the bottom."],
-                ["F2L", "Solve the first two layers as four corner-edge pairs."],
-                ["OLL", "Use 2-look OLL first: edges, then corners."],
-                ["PLL", "Use 2-look PLL first: corners, then edges."],
-              ].map(([title, text]) => (
-                <div key={title} className="rounded-xl border border-white/10 bg-slate-950/50 p-3">
-                  <p className="font-medium text-emerald-200">{title}</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-400">{text}</p>
+      <div className="flex flex-col gap-8">
+        <section className="flex flex-col gap-3">
+          <h2 className="type-heading-sm text-text-primary">Methods</h2>
+          <div className="no-scrollbar -mx-1 flex gap-4 overflow-x-auto px-1 pb-1">
+            {(Object.keys(METHOD_LABELS) as MethodId[]).map((methodId) => (
+              <button
+                key={methodId}
+                type="button"
+                onClick={() => setMethod(methodId)}
+                className={`group flex w-52 shrink-0 flex-col gap-3 rounded-xl border p-3 text-left transition-colors ${method === methodId ? "border-border-strong bg-surface-raised" : "border-border bg-surface-raised hover:border-border-strong"}`}
+              >
+                <div className="flex h-16 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                  <span className="text-2xl font-display font-bold">{METHOD_LABELS[methodId].slice(0, 1)}</span>
                 </div>
-              ))}
-            </div>
-            <div className="mt-4 border-t border-emerald-500/20 pt-4 text-sm leading-6 text-slate-300">
-              <span className="font-medium text-white">Practice advice: </span>
-              prioritise OLL and PLL recognition, then invest time in F2L. F2L may feel slower at first;
-              consistent repetition is what turns recognition into speed. Learn finger tricks alongside the
-              algorithms, and consider advanced Cross, F2L, Full OLL, and Full PLL once your fundamentals are stable.
-            </div>
-            <p className="mt-3 text-xs text-slate-500">
-              Adapted and curated from{" "}
-              <a className="text-emerald-300 underline decoration-emerald-300/40 underline-offset-2 hover:text-emerald-200" href="https://jperm.net/3x3/cfop" target="_blank" rel="noreferrer">
-                J Perm’s “CFOP Speedsolving Method”
-              </a>
-              . Used as an instructional reference; wording and practice flow are Cubr’s.
-            </p>
-          </div>
-        </section>
-      )}
-
-      <section className="rounded-2xl border border-white/10 bg-slate-900/80 p-4">
-        <p className="mb-3 text-xs uppercase tracking-[0.2em] text-slate-400">Choose a method</p>
-        <div className="flex flex-wrap gap-2">
-          {(Object.keys(METHOD_LABELS) as MethodId[]).map((methodId) => (
-            <button key={methodId} type="button" onClick={() => setMethod(methodId)} className={`rounded-lg px-4 py-2 text-sm font-medium ${method === methodId ? "bg-emerald-500 text-slate-950" : "bg-slate-800 text-slate-200 hover:bg-slate-700"}`}>
-              {METHOD_LABELS[methodId]}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-        <aside className="rounded-2xl border border-white/10 bg-slate-900/80 p-3">
-          <p className="px-2 pb-2 text-xs uppercase tracking-[0.2em] text-slate-400">{METHOD_LABELS[method]} stages</p>
-          <div className="space-y-1">
-            {stages.map((item, index) => (
-              <button key={item.id} type="button" onClick={() => selectStage(item.id)} className={`w-full rounded-lg px-3 py-3 text-left ${stage.id === item.id ? "bg-emerald-500/15 text-emerald-200" : "text-slate-300 hover:bg-slate-800"}`}>
-                <span className="mr-2 text-xs text-slate-500">{index + 1}</span>{item.label}
+                <div className="min-w-0">
+                  <p className="type-label-md text-text-primary">{METHOD_LABELS[methodId]}</p>
+                  <p className="type-body-sm text-text-secondary">{METHOD_DESCRIPTIONS[methodId]}</p>
+                </div>
               </button>
             ))}
           </div>
-        </aside>
+        </section>
 
-        <main className="space-y-5 rounded-2xl border border-white/10 bg-slate-900/80 p-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Stage {stages.indexOf(stage) + 1}</p>
-            <h2 className="mt-1 text-xl font-semibold">{stage.label}</h2>
-            <p className="mt-1 text-sm text-slate-400">{stage.description}</p>
+        <section className="flex flex-col gap-3">
+          <h2 className="type-heading-sm text-text-primary">{METHOD_LABELS[method]} path</h2>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {stages.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => selectStage(item.id)}
+                className={`rounded-xl border p-4 text-left transition-colors ${stage.id === item.id ? "border-border-strong bg-surface-raised" : "border-border bg-surface-raised hover:border-border-strong"}`}
+              >
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="type-caption text-text-secondary">Stage {index + 1}</span>
+                  <span className="rounded-full bg-brand/10 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-brand">
+                    {METHOD_LABELS[method]}
+                  </span>
+                </div>
+                <p className="type-label-md text-text-primary">{item.label}</p>
+                <p className="mt-2 type-body-sm text-text-secondary">{item.description}</p>
+              </button>
+            ))}
           </div>
+        </section>
 
+        <section className="flex flex-col gap-3">
+          <h2 className="type-heading-sm text-text-primary">Case library</h2>
           {error && <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">{error}</div>}
           {!error && cases.length === 0 && (
-            <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/50 p-6 text-sm text-slate-400">
+            <div className="rounded-xl border border-dashed border-border bg-surface-raised p-6 text-sm text-text-secondary">
               No cases are seeded for this {METHOD_LABELS[method]} stage yet. The stage is ready for its algorithm library.
             </div>
           )}
 
           {cases.length > 0 && (
-            <>
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {cases.map((algorithm) => (
-                  <button key={algorithm.id} type="button" onClick={() => { setSelectedId(algorithm.id); resetTimer(); }} className={`rounded-xl border p-4 text-left transition ${selected?.id === algorithm.id ? "border-emerald-400 bg-emerald-500/10" : "border-white/10 bg-slate-950/60 hover:border-emerald-500/40"}`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="font-medium text-white">{algorithm.name}</span>
-                      {algorithm.mastery !== undefined && <span className="text-xs text-emerald-300">{Math.round(algorithm.mastery * 100)}%</span>}
-                    </div>
-                    <p className="mt-3 font-mono text-xs leading-5 text-slate-300">{algorithm.moves}</p>
-                  </button>
-                ))}
-              </div>
-
-              {selected && (
-                <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/5 p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-emerald-300/70">Practice case</p>
-                      <h3 className="mt-1 text-lg font-semibold">{selected.name}</h3>
-                    </div>
-                    <div className="font-mono text-2xl text-white">{formatTime(elapsed)}</div>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {cases.map((algorithm) => (
+                <button
+                  key={algorithm.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedId(algorithm.id);
+                    resetTimer();
+                  }}
+                  className={`rounded-xl border p-4 text-left transition-colors ${selected?.id === algorithm.id ? "border-brand bg-brand/5" : "border-border bg-surface-raised hover:border-border-strong"}`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="type-label-md text-text-primary">{algorithm.name}</span>
+                    {algorithm.mastery !== undefined && (
+                      <span className="type-body-sm text-brand">{Math.round(algorithm.mastery * 100)}%</span>
+                    )}
                   </div>
-                  <div className="mt-4 rounded-xl bg-slate-950/80 p-4 font-mono text-sm text-emerald-100">{selected.moves}</div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <button type="button" onClick={toggleTimer} className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium ${running ? "bg-amber-400 text-slate-950" : "bg-emerald-500 text-slate-950"}`}>
-                      {running ? <><Pause className="h-4 w-4" /> Stop attempt</> : <><Play className="h-4 w-4" /> Try algorithm</>}
-                    </button>
-                    <button type="button" onClick={resetPractice} className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-slate-800 px-4 py-2 text-sm text-slate-100 hover:bg-slate-700"><RotateCcw className="h-4 w-4" /> Reset</button>
-                  </div>
-                  <p className="mt-3 text-xs text-slate-400">
-                    {running ? "Press Space to stop and record this attempt." : "Press Space to start an attempt."}
-                  </p>
-                  {attempts.length > 0 && (
-                    <div className="mt-4 border-t border-emerald-500/20 pt-3">
-                      <p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-400"><Clock3 className="h-3 w-3" /> Recent attempts</p>
-                      <div className="flex flex-wrap gap-2">
-                        {attempts.map((attempt, index) => <span key={`${attempt}-${index}`} className="rounded-md bg-slate-800 px-2 py-1 font-mono text-xs text-emerald-200">{formatTime(attempt)}</span>)}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
+                  <p className="mt-3 font-mono text-xs leading-5 text-text-secondary">{algorithm.moves}</p>
+                </button>
+              ))}
+            </div>
           )}
+        </section>
 
-          <div className="flex items-center gap-2 text-xs text-slate-500"><Check className="h-3 w-3 text-emerald-400" /> Select a case, read the algorithm, then repeat it until the motion feels automatic.</div>
-        </main>
+        {selected && (
+          <section className="rounded-2xl border border-border bg-surface-raised p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="type-caption text-text-tertiary">Practice case</p>
+                <h3 className="type-heading-sm text-text-primary">{selected.name}</h3>
+              </div>
+              <div className="font-mono text-2xl text-brand">{formatTime(elapsed)}</div>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-border bg-surface-base p-4 font-mono text-sm text-brand/90">
+              {selected.moves}
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={toggleTimer}
+                className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium ${running ? "bg-amber-400 text-slate-950" : "bg-brand text-slate-950"}`}
+              >
+                {running ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                {running ? "Stop attempt" : "Try algorithm"}
+              </button>
+              <button
+                type="button"
+                onClick={resetPractice}
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-base px-4 py-2 text-sm text-text-primary hover:border-border-strong"
+              >
+                <RotateCcw className="h-4 w-4" />
+                Reset
+              </button>
+            </div>
+
+            <p className="mt-3 text-xs text-text-secondary">
+              {running ? "Press Space to stop and record this attempt." : "Press Space to start an attempt."}
+            </p>
+
+            {attempts.length > 0 && (
+              <div className="mt-4 border-t border-border pt-3">
+                <p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-text-tertiary">
+                  <Clock3 className="h-3 w-3" />
+                  Recent attempts
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {attempts.map((attempt, index) => (
+                    <span key={`${attempt}-${index}`} className="rounded-md bg-surface-base px-2 py-1 font-mono text-xs text-brand">
+                      {formatTime(attempt)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        <div className="flex items-center gap-2 text-xs text-text-secondary">
+          <Check className="h-3 w-3 text-brand" />
+          Select a case, read the algorithm, then repeat it until the movement feels automatic.
+        </div>
       </div>
     </div>
   );

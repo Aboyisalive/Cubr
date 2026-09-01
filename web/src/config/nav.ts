@@ -1,4 +1,4 @@
-import { Home, Boxes, GraduationCap, Gauge, Palette, Settings, type LucideIcon } from "lucide-react";
+import { Home, Boxes, GraduationCap, Gauge, Settings, type LucideIcon } from "lucide-react";
 
 export interface NavDestination {
   label: string;
@@ -15,6 +15,5 @@ export const NAV_DESTINATIONS: NavDestination[] = [
   { label: "Solver", to: "/app/solver", icon: Boxes },
   { label: "Guide", to: "/app/guide", icon: GraduationCap },
   { label: "Pro Mode", to: "/app/pro", icon: Gauge },
-  { label: "Themes", to: "/app/themes", icon: Palette },
   { label: "Settings", to: "/app/settings", icon: Settings },
 ];

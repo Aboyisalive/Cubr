@@ -1,6 +1,7 @@
 import { ArrowRight, Camera, Check, ScanLine, Video, Webcam } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { StatCard } from "@/components/dashboard/StatCard";
 import { useCamera } from "@/hooks/useCamera";
 import { useUiStore } from "@/store/uiStore";
 
@@ -304,15 +305,19 @@ export default function Scanner() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-4 md:p-8">
-      <div className="flex items-center gap-3">
-        <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-300">
-          <ScanLine className="h-7 w-7" />
-        </div>
-        <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-emerald-300/80">Phase 5 · Scanner</p>
-          <h1 className="text-2xl font-semibold">Live face-by-face scan</h1>
-        </div>
+    <div className="flex flex-col gap-10 px-4 py-6 md:px-8">
+      <header className="flex flex-col gap-1">
+        <p className="type-caption text-text-tertiary">Phase 5 · Scanner</p>
+        <h1 className="type-heading-lg flex items-center gap-3 text-text-primary">
+          <ScanLine className="text-brand" size={28} />
+          Live face-by-face scan
+        </h1>
+      </header>
+
+      <div className="flex flex-wrap gap-4">
+        <StatCard label="Faces" value={String(currentFaceIndex + 1)} hint="current" />
+        <StatCard label="Status" value={allComplete ? "Ready" : "Scanning"} />
+        <StatCard label="Method" value={solveMethod === "kociemba" ? "Kociemba" : "Beginner"} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">

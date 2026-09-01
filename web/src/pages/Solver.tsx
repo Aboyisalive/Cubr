@@ -59,73 +59,73 @@ export default function Solver() {
   const completed = moveIndex >= moves.length;
 
   return (
-    <div className="flex flex-col gap-10 px-4 py-6 md:px-8">
-      <header className="flex flex-col gap-1">
-        <p className="type-caption text-text-tertiary">Solver · Kociemba</p>
-        <h1 className="type-heading-lg flex items-center gap-3 text-text-primary">
-          <Boxes className="text-brand" size={28} />
+    <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
+      <header className="mb-8 flex flex-col gap-1">
+        <p className="text-xs uppercase tracking-[0.28em] text-white/50">Solver · Kociemba</p>
+        <h1 className="flex items-center gap-3 text-3xl font-semibold text-white sm:text-4xl">
+          <Boxes className="text-[#ff8d42]" size={28} />
           Follow the solve
         </h1>
       </header>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="mb-8 flex flex-wrap gap-4">
         <StatCard label="Method" value="Kociemba" />
         <StatCard label="Moves" value={String(result?.moveCount ?? 0)} />
         <StatCard label="Status" value={completed ? "Solved" : "In progress"} />
       </div>
 
       <div className="mx-auto w-full max-w-4xl space-y-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <span className="rounded-full border border-border bg-surface-raised px-2 py-1 text-xs uppercase tracking-[0.2em] text-text-tertiary">
+        <div className="flex items-center justify-between gap-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xl">
+          <div className="flex items-center gap-2 text-sm text-white/60">
+            <span className="rounded-full border border-white/10 bg-black/10 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-white/50">
               Active solve
             </span>
           </div>
-          <button type="button" onClick={() => navigate("/app/scan")} className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-raised px-3 py-2 text-sm text-text-primary hover:border-border-strong">
+          <button type="button" onClick={() => navigate("/app/scan")} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/10 px-3 py-2 text-sm text-white hover:border-white/20">
             <ArrowLeft className="h-4 w-4" /> Scan again
           </button>
         </div>
 
         {error && (
-          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-200">
+          <div className="rounded-[22px] border border-amber-500/30 bg-amber-500/10 p-4 text-amber-200">
             {error}
           </div>
         )}
 
         {result && (
-          <div className="space-y-5 rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-slate-950/20">
+          <div className="space-y-5 rounded-[28px] border border-white/10 bg-white/[0.03] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.35)] backdrop-blur-xl">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm text-text-secondary">Scanned cube solution</p>
-                <p className="mt-1 text-sm text-brand">{result.moveCount} moves · follow each move in order</p>
+                <p className="text-sm text-white/60">Scanned cube solution</p>
+                <p className="mt-1 text-sm text-[#ff8d42]">{result.moveCount} moves · follow each move in order</p>
               </div>
-              <button type="button" onClick={() => setMoveIndex(0)} className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-base px-3 py-2 text-sm text-text-primary hover:border-border-strong">
+              <button type="button" onClick={() => setMoveIndex(0)} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/10 px-3 py-2 text-sm text-white hover:border-white/20">
                 <RotateCcw className="h-4 w-4" /> Reset
               </button>
             </div>
 
-            <div className="rounded-2xl border border-brand/30 bg-brand/5 p-8 text-center">
-              <p className="text-xs uppercase tracking-[0.2em] text-brand/80">
+            <div className="rounded-[26px] border border-[#ff8d42]/25 bg-[#ff8d42]/8 p-8 text-center">
+              <p className="text-xs uppercase tracking-[0.2em] text-[#ffb07b]">
                 {completed ? "Solved" : `Move ${moveIndex + 1} of ${moves.length}`}
               </p>
-              <div className="mt-3 font-mono text-6xl font-semibold text-text-primary">{currentMove ?? "✓"}</div>
-              <p className="mt-3 text-sm text-text-secondary">
+              <div className="mt-3 font-mono text-6xl font-semibold text-white">{currentMove ?? "✓"}</div>
+              <p className="mt-3 text-sm text-white/65">
                 {completed ? "The cube should now be solved." : "Turn the indicated face, then continue."}
               </p>
             </div>
 
             <div className="flex gap-2">
-              <button type="button" onClick={() => setMoveIndex((index) => Math.max(0, index - 1))} disabled={moveIndex === 0} className="flex-1 rounded-lg border border-border bg-surface-base px-3 py-3 text-sm text-text-primary disabled:opacity-40">
+              <button type="button" onClick={() => setMoveIndex((index) => Math.max(0, index - 1))} disabled={moveIndex === 0} className="flex-1 rounded-xl border border-white/10 bg-black/10 px-3 py-3 text-sm text-white disabled:opacity-40">
                 Previous
               </button>
-              <button type="button" onClick={() => setMoveIndex((index) => Math.min(moves.length, index + 1))} disabled={completed} className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-3 py-3 text-sm font-medium text-slate-950 disabled:opacity-40">
+              <button type="button" onClick={() => setMoveIndex((index) => Math.min(moves.length, index + 1))} disabled={completed} className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#ff8d42] px-3 py-3 text-sm font-medium text-slate-950 disabled:opacity-40">
                 Next move <ArrowRight className="h-4 w-4" />
               </button>
             </div>
 
             <div className="flex flex-wrap gap-2">
               {moves.map((move, index) => (
-                <button key={`${move}-${index}`} type="button" onClick={() => setMoveIndex(index)} className={`rounded-md px-2 py-1 font-mono text-xs ${index === moveIndex ? "bg-brand text-slate-950" : index < moveIndex ? "bg-brand/10 text-brand" : "bg-surface-base text-text-secondary"}`}>
+                <button key={`${move}-${index}`} type="button" onClick={() => setMoveIndex(index)} className={`rounded-lg px-2 py-1 font-mono text-xs ${index === moveIndex ? "bg-[#ff8d42] text-slate-950" : index < moveIndex ? "bg-[#ff8d42]/10 text-[#ff8d42]" : "bg-black/10 text-white/70"}`}>
                   {move}
                 </button>
               ))}

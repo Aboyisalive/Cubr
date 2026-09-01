@@ -22,20 +22,26 @@ export function NavItem({ to, label, icon: Icon, end }: NavItemProps) {
       end={end}
       className={({ isActive }) =>
         cn(
-          "group flex items-center gap-3 rounded-lg px-3 h-10",
-          "text-label-md transition-colors",
+          "group flex h-11 items-center gap-3 rounded-2xl px-3 text-label-md transition-all",
           isActive
-            ? "bg-brand-subtle text-brand"
-            : "text-text-secondary hover:bg-surface-raised hover:text-text-primary"
+            ? "border border-brand/30 bg-brand/12 text-brand shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]"
+            : "border border-transparent text-text-secondary hover:border-white/10 hover:bg-white/5 hover:text-text-primary"
         )
       }
     >
       {({ isActive }) => (
         <>
-          <Icon
-            size={20}
-            className={isActive ? "text-brand" : "text-text-tertiary group-hover:text-text-primary"}
-          />
+          <div
+            className={cn(
+              "flex h-8 w-8 items-center justify-center rounded-xl",
+              isActive ? "bg-brand/12" : "bg-white/5"
+            )}
+          >
+            <Icon
+              size={17}
+              className={isActive ? "text-brand" : "text-text-tertiary group-hover:text-text-primary"}
+            />
+          </div>
           <span>{label}</span>
         </>
       )}

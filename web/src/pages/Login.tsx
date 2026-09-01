@@ -3,13 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useAuthStore } from "@/store/authSlice";
 
-/**
- * Login (Section 7): a calm, minimal moment — a centered card on the single
- * background, not a shelf-heavy layout. Room left for future OAuth options.
- */
 export default function Login() {
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
@@ -24,43 +19,43 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-full flex-col bg-bg-default">
+    <div className="flex min-h-full flex-col bg-transparent">
       <header className="mx-auto flex w-full max-w-6xl items-center px-4 py-5 md:px-8">
         <Link to="/" className="flex items-center gap-2 text-text-secondary hover:text-text-primary">
           <ArrowLeft size={18} />
           <Logo />
         </Link>
-        <ThemeToggle className="ml-auto" />
       </header>
 
       <main className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="w-full max-w-sm rounded-2xl border border-border bg-surface-raised p-8">
-          <h1 className="type-heading-md mb-1 text-text-primary">Welcome back</h1>
-          <p className="type-body-md mb-6 text-text-secondary">Log in to pick up where you left off.</p>
+        <div className="w-full max-w-md rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.38)] backdrop-blur-2xl sm:p-8">
+          <div className="mb-6">
+            <p className="type-caption text-brand">CUBR / SIGN IN</p>
+            <h1 className="mt-2 type-heading-md text-text-primary">Welcome back</h1>
+            <p className="mt-2 type-body-md text-text-secondary">Log in to pick up where you left off.</p>
+          </div>
 
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="you@example.com" />
             <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="••••••••" />
 
-            <Button type="submit" size="lg" className="mt-2 w-full" disabled={status === "loading"}>
+            <Button type="submit" size="lg" className="mt-2 w-full rounded-2xl" disabled={status === "loading"}>
               {status === "loading" ? "Logging in…" : "Log in"}
             </Button>
           </form>
 
           <div className="my-6 flex items-center gap-3">
-            <span className="h-px flex-1 bg-border" />
+            <span className="h-px flex-1 bg-white/10" />
             <span className="type-caption text-text-tertiary">or</span>
-            <span className="h-px flex-1 bg-border" />
+            <span className="h-px flex-1 bg-white/10" />
           </div>
 
-          {/* Room for future OAuth options (Section 7) */}
-          <Button variant="secondary" size="lg" className="w-full" disabled>
+          <Button variant="secondary" size="lg" className="w-full rounded-2xl" disabled>
             Continue with Google
           </Button>
 
           <p className="type-body-sm mt-6 text-center text-text-secondary">
-            New to cubr?{" "}
-            <Link to="/app" className="text-brand hover:underline">Create an account</Link>
+            New to cubr? <Link to="/app" className="text-brand hover:underline">Create an account</Link>
           </p>
         </div>
       </main>
@@ -90,7 +85,7 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required
-        className="h-11 rounded-lg border border-border bg-surface-default px-3 text-body-md text-text-primary placeholder:text-text-tertiary outline-none transition-colors focus:border-brand"
+        className="h-12 rounded-2xl border border-white/10 bg-black/15 px-3 text-body-md text-text-primary placeholder:text-text-tertiary outline-none transition-colors focus:border-brand/50"
       />
     </label>
   );

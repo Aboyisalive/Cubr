@@ -47,65 +47,75 @@ export default function Landing() {
   }, [waitlistOpen]);
 
   return (
-    <div className="relative h-full overflow-hidden bg-[#020305]">
-      <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
-        <CubrScene scrollProgress={scrollProgress} className="h-full w-full" />
+    <div className="relative min-h-screen overflow-hidden bg-[#05070b] text-white">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,126,50,0.18),transparent_35%),radial-gradient(circle_at_80%_15%,rgba(255,255,255,0.14),transparent_20%),linear-gradient(180deg,#04070b_0%,#090d12_35%,#04070b_100%)]" />
+        <CubrScene scrollProgress={scrollProgress} className="h-full w-full scale-[0.85] opacity-60" />
       </div>
 
-      <div ref={scrollRef} className="relative z-10 h-full overflow-y-auto overflow-x-hidden text-white">
-        <header className="mx-auto flex max-w-7xl items-center px-5 py-6 sm:px-8 lg:px-12">
-          <Logo compact className="[&>span]:text-white" />
+      <div ref={scrollRef} className="relative z-10 h-full overflow-y-auto overflow-x-hidden">
+        <header className="mx-auto flex max-w-7xl items-center px-4 py-5 sm:px-6 lg:px-8">
+          <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 backdrop-blur-xl shadow-[0_12px_30px_rgba(3,7,13,0.55)]">
+            <Logo compact className="[&>span]:text-white" />
+          </div>
           <div className="ml-auto flex items-center gap-2 sm:gap-4">
-            <a className="hidden text-label-md text-white/55 transition-colors hover:text-white sm:block" href="#story" onClick={scrollToStory}>Explore</a>
-            <Button className="gap-2" onClick={() => setWaitlistOpen(true)}><Mail size={15} />Join waitlist</Button>
+            <a className="hidden text-sm text-white/60 transition-colors hover:text-white sm:block" href="#story" onClick={scrollToStory}>Explore</a>
+            <Button className="gap-2 rounded-full border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.09]" onClick={() => setWaitlistOpen(true)}><Mail size={15} />Join waitlist</Button>
           </div>
         </header>
 
         <main>
-          <section className="mx-auto flex min-h-[88vh] max-w-7xl items-center px-5 pb-16 pt-10 sm:px-8 lg:px-12">
-            <div className="landing-copy max-w-2xl">
-              <p className="type-caption mb-6 text-[#ff6b0f]">CUBR / THE CUBE, RECONSIDERED</p>
-              <h1 className="font-display text-[clamp(3.25rem,8vw,7.5rem)] font-bold leading-[0.92] tracking-[-0.065em] text-white">Scan, solve,<br />and master<br />the cube.</h1>
-              <p className="type-body-lg mt-8 max-w-md text-white/58">A precision companion for the first solve, the next personal best, and everything between.</p>
+          <section className="mx-auto flex min-h-[84vh] max-w-7xl items-center px-4 pb-12 pt-8 sm:px-6 lg:px-8">
+            <div className="max-w-3xl rounded-[32px] border border-white/12 bg-white/[0.03] p-6 shadow-[0_18px_60px_rgba(5,8,12,0.7)] backdrop-blur-2xl sm:p-8 lg:p-10">
+              <p className="mb-6 text-xs uppercase tracking-[0.28em] text-[#ff8d42]">CUBR / THE CUBE, RECONSIDERED</p>
+              <h1 className="font-display text-[clamp(3.2rem,7vw,7.2rem)] font-semibold leading-[0.9] tracking-[-0.07em] text-white">Scan, solve,<br />and master<br />the cube.</h1>
+              <p className="mt-8 max-w-xl text-base text-white/66 sm:text-lg">A precision companion for the first solve, the next personal best, and everything between.</p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <Button size="lg" className="gap-2" onClick={() => setWaitlistOpen(true)}><Mail size={18} />Join the waitlist</Button>
-                <a href="#story" onClick={scrollToStory} className="inline-flex items-center gap-2 text-label-lg text-white/70 transition-colors hover:text-white">See what it does <ArrowRight size={17} /></a>
+                <Button size="lg" className="gap-2 rounded-full bg-[#ff8d42] text-[#120d0b] shadow-[0_12px_24px_rgba(255,141,66,0.35)] hover:bg-[#ff9a59]" onClick={() => setWaitlistOpen(true)}><Mail size={18} />Join the waitlist</Button>
+                <a href="#story" onClick={scrollToStory} className="inline-flex items-center gap-2 text-sm font-medium text-white/72 transition-colors hover:text-white">See what it does <ArrowRight size={17} /></a>
               </div>
             </div>
           </section>
 
-          <section id="story" className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+          <section id="story" className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
             {FLIERS.map(({ number, icon: Icon, kicker, title, body, label }, index) => (
-              <article key={number} className={`relative flex min-h-[82vh] items-center border-t border-white/12 py-20 ${index % 2 ? "justify-end" : "justify-start"}`}>
-                <div className={`landing-copy max-w-xl ${index % 2 ? "lg:mr-[8%]" : "lg:ml-[4%]"}`}>
-                  <div className="mb-10 flex items-center gap-4 text-white/42"><span className="font-display text-2xl tracking-[-0.05em]">{number}</span><span className="h-px w-12 bg-white/25" /><Icon size={18} /></div>
-                  <p className="type-caption text-[#ff6b0f]">{kicker}</p>
-                  <h2 className="mt-5 font-display text-[clamp(2.6rem,5.4vw,5.5rem)] font-bold leading-[0.96] tracking-[-0.06em] text-white">{title}</h2>
-                  <p className="type-body-lg mt-7 max-w-md text-white/58">{body}</p>
-                  <span className="mt-9 inline-flex border-b border-white/30 pb-2 text-label-md text-white/82">{label}</span>
+              <article key={number} className={`relative flex min-h-[72vh] items-center py-12 ${index % 2 ? "justify-end" : "justify-start"}`}>
+                <div className={`w-full max-w-xl rounded-[32px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:p-8 ${index % 2 ? "lg:mr-[6%]" : "lg:ml-[4%]"}`}>
+                  <div className="mb-6 flex items-center gap-4 text-white/40">
+                    <span className="font-display text-2xl tracking-[-0.04em]">{number}</span>
+                    <span className="h-px w-12 bg-white/20" />
+                    <Icon size={18} />
+                  </div>
+                  <p className="text-xs uppercase tracking-[0.26em] text-[#ff8d42]">{kicker}</p>
+                  <h2 className="mt-5 font-display text-[clamp(2.5rem,5vw,5rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-white">{title}</h2>
+                  <p className="mt-7 max-w-md text-base text-white/62">{body}</p>
+                  <span className="mt-9 inline-flex border-b border-white/25 pb-2 text-sm font-medium text-white/75">{label}</span>
                 </div>
               </article>
             ))}
           </section>
 
-          <section className="mx-auto flex min-h-[88vh] max-w-7xl items-end px-5 pb-20 pt-28 sm:px-8 lg:px-12">
-            <div className="w-full border-t border-white/15 pt-10 sm:flex sm:items-end sm:justify-between">
-              <div className="landing-copy max-w-2xl">
-                <p className="type-caption text-[#ff6b0f]">YOUR NEXT SOLVE STARTS HERE</p>
-                <h2 className="mt-5 font-display text-[clamp(3rem,6vw,6.25rem)] font-bold leading-[0.93] tracking-[-0.07em]">Find the move<br />that changes everything.</h2>
+          <section className="mx-auto flex min-h-[72vh] max-w-7xl items-end px-4 pb-20 pt-10 sm:px-6 lg:px-8">
+            <div className="w-full rounded-[30px] border border-white/10 bg-white/[0.02] p-6 shadow-[0_18px_60px_rgba(3,7,13,0.7)] backdrop-blur-2xl sm:p-8 lg:p-10">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+                <div className="max-w-2xl">
+                  <p className="text-xs uppercase tracking-[0.24em] text-[#ff8d42]">Your next solve starts here</p>
+                  <h2 className="mt-5 font-display text-[clamp(2.6rem,5vw,5.6rem)] font-semibold leading-[0.92] tracking-[-0.07em] text-white">Find the move<br />that changes everything.</h2>
+                </div>
+                <Button size="lg" className="gap-2 rounded-full bg-[#ff8d42] text-[#140e0b] shadow-[0_12px_24px_rgba(255,141,66,0.3)] hover:bg-[#ff9a59]" onClick={() => setWaitlistOpen(true)}><Mail size={18} />Join the waitlist</Button>
               </div>
-              <Button size="lg" className="mt-8 gap-2 sm:mt-0" onClick={() => setWaitlistOpen(true)}><Mail size={18} />Join the waitlist</Button>
             </div>
           </section>
         </main>
 
-        <footer className="border-t border-white/10">
-          <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-body-sm text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+        <footer className="border-t border-white/10 bg-black/10 backdrop-blur-xl">
+          <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
             <Logo withWordmark compact className="[&>span]:text-white" />
             <div className="flex gap-6"><span>Privacy</span><span>Terms</span><span>© 2026 cubr</span></div>
           </div>
         </footer>
       </div>
+
       {waitlistOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm"
@@ -115,19 +125,19 @@ export default function Landing() {
           }}
         >
           <section
-            className="landing-copy w-full max-w-md rounded-[var(--radius-card)] border border-white/20 bg-[#0b0d12]/95 p-6 shadow-2xl sm:p-8"
+            className="w-full max-w-md rounded-[28px] border border-white/12 bg-[#0b0f13]/90 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.72)] backdrop-blur-2xl sm:p-8"
             role="dialog"
             aria-modal="true"
             aria-labelledby="waitlist-title"
           >
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
-                <p className="type-caption text-[#ff6b0f]">CUBR / EARLY ACCESS</p>
-                <h2 id="waitlist-title" className="type-heading-md mt-2 text-white">Join the waitlist</h2>
+                <p className="text-xs uppercase tracking-[0.24em] text-[#ff8d42]">CUBR / EARLY ACCESS</p>
+                <h2 id="waitlist-title" className="mt-2 text-2xl font-semibold text-white">Join the waitlist</h2>
               </div>
               <button
                 type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-2xl text-white/60 hover:bg-white/10 hover:text-white"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-2xl text-white/60 transition hover:bg-white/8 hover:text-white"
                 aria-label="Close waitlist dialog"
                 onClick={() => setWaitlistOpen(false)}
               >

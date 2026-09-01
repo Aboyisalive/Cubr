@@ -9,7 +9,10 @@ import type { Shelf as ShelfData } from "@/types/home";
 export function Shelf({ shelf }: { shelf: ShelfData }) {
   return (
     <section className="flex flex-col gap-3">
-      <h2 className="type-heading-sm text-text-primary">{shelf.heading}</h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="type-heading-sm text-text-primary">{shelf.heading}</h2>
+        <span className="type-caption text-text-tertiary">{shelf.items.length} items</span>
+      </div>
       <div className="no-scrollbar -mx-1 flex gap-4 overflow-x-auto px-1 pb-1">
         {shelf.items.map((item) => (
           <ShelfCard key={item.id} item={item} />

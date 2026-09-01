@@ -9,6 +9,7 @@ export function WaitlistForm() {
   const [error, setError] = useState("");
   const [result, setResult] = useState<WaitlistSignupResponse | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [queued, setQueued] = useState(false);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,10 +25,14 @@ export function WaitlistForm() {
     }
     setError("");
     setSubmitting(true);
+    setQueued(true);
+
     try {
       const response = await api.post<WaitlistSignupResponse>(ENDPOINTS.waitlistJoin, { name, email });
       setResult(response);
+      setQueued(false);
     } catch (requestError) {
+      setQueued(false);
       setError(requestError instanceof Error ? requestError.message : "Could not join the waitlist.");
     } finally {
       setSubmitting(false);
@@ -40,6 +45,23 @@ export function WaitlistForm() {
         <p className="type-caption text-[#ff6b0f]">YOU&apos;RE IN</p>
         <p className="type-heading-md mt-3 text-white">You&apos;re #{result.position} on the list</p>
         <p className="type-body-md mt-3 text-white/58">We&apos;ll keep you posted when CUBR is ready.</p>
+      </div>
+    );
+  }
+
+  if (queued) {
+    return (
+      <div className="space-y-5 py-2" aria-live="polite">
+        <div className="rounded-2xl border border-[#ff8d42]/20 bg-[#ff8d42]/6 p-4 text-left">
+          <p className="text-xs uppercase tracking-[0.22em] text-[#ff8d42]">Queueing</p>
+          <p className="mt-2 text-lg font-medium text-white">You&apos;re in the early-access list.</p>
+          <p className="mt-1 text-sm text-white/60">Saving your spot while the request confirms…</p>
+        </div>
+        <div className="space-y-3 animate-pulse">
+          <div className="h-11 w-full rounded-2xl bg-white/8" />
+          <div className="h-11 w-full rounded-2xl bg-white/8" />
+          <div className="h-12 w-full rounded-2xl bg-[#ff8d42]/20" />
+        </div>
       </div>
     );
   }

@@ -29,12 +29,12 @@ const FACE_META: Record<FaceId, FaceState> = {
 
 const COLOR_SEQUENCE = ["", "U", "R", "F", "D", "L", "B"] as const;
 const COLOR_STYLES: Record<string, string> = {
-  U: "bg-sky-400 text-sky-950",
-  R: "bg-red-500 text-white",
-  F: "bg-emerald-500 text-emerald-950",
-  D: "bg-yellow-300 text-yellow-950",
-  L: "bg-orange-500 text-white",
-  B: "bg-violet-500 text-white",
+  U: "bg-[#f3f0ea] text-[#11161b]",
+  R: "bg-[#c76b3a] text-white",
+  F: "bg-[#ff8d42] text-[#1b120d]",
+  D: "bg-[#d7c79d] text-[#141511]",
+  L: "bg-[#b78d61] text-[#1a120c]",
+  B: "bg-[#3d434d] text-white",
   "": "bg-slate-800 text-slate-500",
 };
 
@@ -305,26 +305,26 @@ export default function Scanner() {
   }
 
   return (
-    <div className="flex flex-col gap-10 px-4 py-6 md:px-8">
-      <header className="flex flex-col gap-1">
-        <p className="type-caption text-text-tertiary">Phase 5 · Scanner</p>
-        <h1 className="type-heading-lg flex items-center gap-3 text-text-primary">
-          <ScanLine className="text-brand" size={28} />
+    <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
+      <header className="mb-8 flex flex-col gap-1">
+        <p className="text-xs uppercase tracking-[0.28em] text-white/50">Phase 5 · Scanner</p>
+        <h1 className="flex items-center gap-3 text-3xl font-semibold text-white sm:text-4xl">
+          <ScanLine className="text-[#ff8d42]" size={28} />
           Live face-by-face scan
         </h1>
       </header>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="mb-8 flex flex-wrap gap-4">
         <StatCard label="Faces" value={String(currentFaceIndex + 1)} hint="current" />
         <StatCard label="Status" value={allComplete ? "Ready" : "Scanning"} />
         <StatCard label="Method" value={solveMethod === "kociemba" ? "Kociemba" : "Beginner"} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-4 shadow-lg shadow-slate-950/20">
+        <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-4 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl">
           <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2 text-sm text-slate-300">
-              <Camera className="h-4 w-4 text-emerald-300" />
+              <Camera className="h-4 w-4 text-[#ffb07b]" />
               <span>Webcam input</span>
             </div>
 
@@ -340,7 +340,7 @@ export default function Scanner() {
                       void start(nextId);
                     }
                   }}
-                  className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none"
+                  className="rounded-lg border border-white/10 bg-[#11161d] px-3 py-2 text-sm text-slate-100 outline-none"
                   disabled={devices.length === 0 || loading}
                 >
                   {devices.length === 0 ? <option value="">No camera detected</option> : devices.map((device) => (
@@ -350,7 +350,7 @@ export default function Scanner() {
               </label>
 
               {!active ? (
-                <button type="button" onClick={() => void start(selectedDeviceId || undefined)} disabled={loading || devices.length === 0} className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="button" onClick={() => void start(selectedDeviceId || undefined)} disabled={loading || devices.length === 0} className="rounded-lg bg-[#ff8d42] px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-[#ff9a59] disabled:cursor-not-allowed disabled:opacity-50">
                   {loading ? "Opening…" : "Start scan"}
                 </button>
               ) : (
@@ -364,11 +364,11 @@ export default function Scanner() {
             </div>
           </div>
 
-          <div className="relative mx-auto aspect-square w-full max-w-2xl overflow-hidden rounded-xl border border-white/10 bg-slate-950">
+          <div className="relative mx-auto aspect-square w-full max-w-2xl overflow-hidden rounded-xl border border-white/10 bg-[#0d1117]">
             {active ? (
-              <video ref={videoRef} autoPlay playsInline muted className="h-full w-full bg-black object-cover" />
+              <video ref={videoRef} autoPlay playsInline muted className="h-full w-full bg-[#0b0d11] object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center bg-slate-950 text-slate-400">
+              <div className="flex h-full items-center justify-center bg-[#0d1117] text-slate-400">
                 <div className="flex flex-col items-center gap-3 text-center">
                   <Video className="h-8 w-8 text-slate-500" />
                   <p className="max-w-md text-sm text-slate-400">Pick a webcam and line up the current face with the center marker.</p>
@@ -377,7 +377,7 @@ export default function Scanner() {
             )}
             {active && (
               <div
-                className="pointer-events-none absolute rounded-xl border-2 border-emerald-300/80 transition-[left,top,width,height] duration-150"
+                className="pointer-events-none absolute rounded-xl border-2 border-[#ff8d42]/80 transition-[left,top,width,height] duration-150"
                 style={{
                   left: `${trackingBox.left}%`,
                   top: `${trackingBox.top}%`,
@@ -385,17 +385,17 @@ export default function Scanner() {
                   height: `${trackingBox.size}%`,
                 }}
               >
-                <div className="absolute inset-1/3 border-x border-emerald-300/50" />
-                <div className="absolute inset-y-0 left-1/3 border-l border-emerald-300/50" />
-                <div className="absolute inset-y-0 left-2/3 border-l border-emerald-300/50" />
-                <div className="absolute inset-x-0 top-1/3 border-t border-emerald-300/50" />
-                <div className="absolute inset-x-0 top-2/3 border-t border-emerald-300/50" />
+                <div className="absolute inset-1/3 border-x border-[#ff8d42]/50" />
+                <div className="absolute inset-y-0 left-1/3 border-l border-[#ff8d42]/50" />
+                <div className="absolute inset-y-0 left-2/3 border-l border-[#ff8d42]/50" />
+                <div className="absolute inset-x-0 top-1/3 border-t border-[#ff8d42]/50" />
+                <div className="absolute inset-x-0 top-2/3 border-t border-[#ff8d42]/50" />
               </div>
             )}
           </div>
           <canvas ref={canvasRef} className="hidden" />
           <canvas ref={trackingCanvasRef} className="hidden" />
-          <button type="button" onClick={() => void captureCurrentFace()} disabled={!active || loading} className="mt-3 w-full rounded-lg bg-emerald-500 px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50">
+          <button type="button" onClick={() => void captureCurrentFace()} disabled={!active || loading} className="mt-3 w-full rounded-lg bg-[#ff8d42] px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-[#ff9a59] disabled:cursor-not-allowed disabled:opacity-50">
             Capture {currentMeta.label} face
           </button>
 
@@ -406,30 +406,30 @@ export default function Scanner() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-4 shadow-lg shadow-slate-950/20">
+        <div className="rounded-[28px] border border-white/10 bg-[#11161d]/80 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Current step</p>
               <h2 className="text-xl font-semibold text-white">{currentMeta.label} face</h2>
             </div>
-            <div className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-200">
+            <div className="rounded-full border border-[#ff8d42]/30 bg-[#ff8d42]/10 px-3 py-1 text-xs font-medium text-[#ffb07b]">
               {currentFaceIndex + 1} / {FACE_ORDER.length}
             </div>
           </div>
 
-          <div className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-sm text-slate-200">
+          <div className="mb-4 rounded-xl border border-[#ff8d42]/20 bg-[#ff8d42]/5 p-3 text-sm text-slate-200">
             {currentMeta.prompt}
           </div>
 
           <div className="mb-2 text-xs text-slate-400">Detected colors appear below. Tap any sticker to cycle its color before saving.</div>
-          <div className="grid grid-cols-3 gap-2 rounded-xl border border-white/10 bg-slate-950 p-3">
+          <div className="grid grid-cols-3 gap-2 rounded-xl border border-white/10 bg-[#10141a] p-3">
             {captures[currentFace].map((row, rowIndex) =>
               row.map((cell, colIndex) => (
                 <button
                   key={`${currentFace}-${rowIndex}-${colIndex}`}
                   type="button"
                   onClick={() => updateSticker(rowIndex, colIndex)}
-                  className={`flex aspect-square items-center justify-center rounded-lg border border-white/10 text-xs font-semibold transition ${COLOR_STYLES[cell] ?? "bg-slate-800 text-slate-500"}`}
+                  className={`flex aspect-square items-center justify-center rounded-lg border border-white/10 text-xs font-semibold transition ${COLOR_STYLES[cell] ?? "bg-[#171d24] text-slate-500"}`}
                 >
                   {cell || "•"}
                 </button>
@@ -438,7 +438,7 @@ export default function Scanner() {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <button type="button" onClick={markCurrentFaceComplete} className="rounded-lg bg-emerald-500 px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-emerald-400">
+            <button type="button" onClick={markCurrentFaceComplete} className="rounded-lg bg-[#ff8d42] px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-[#ff9a59]">
               {currentFaceIndex === FACE_ORDER.length - 1 ? "Finish scan" : "Save face"}
             </button>
             <button type="button" onClick={nextFace} className="rounded-lg border border-white/10 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-100 transition hover:bg-slate-700">
@@ -446,14 +446,14 @@ export default function Scanner() {
             </button>
           </div>
 
-          <div className="mt-4 rounded-xl border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-300">
+          <div className="mt-4 rounded-xl border border-white/10 bg-[#0d1117]/80 p-3 text-sm text-slate-300">
             <div className="flex items-center justify-between gap-3">
               <span className="text-slate-400">Status</span>
-              <span className="text-emerald-300">{status}</span>
+              <span className="text-[#ffb07b]">{status}</span>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {FACE_ORDER.map((faceId) => (
-                <span key={faceId} className={`rounded-full border px-2 py-1 text-xs ${captureMapIsComplete(captures[faceId]) ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200" : "border-slate-700 bg-slate-800 text-slate-300"}`}>
+                <span key={faceId} className={`rounded-full border px-2 py-1 text-xs ${captureMapIsComplete(captures[faceId]) ? "border-[#ff8d42]/30 bg-[#ff8d42]/10 text-[#ffb07b]" : "border-slate-700 bg-slate-800 text-slate-300"}`}>
                   {FACE_META[faceId].label}
                 </span>
               ))}
@@ -461,12 +461,12 @@ export default function Scanner() {
           </div>
 
           {allComplete && (
-            <div className="mt-4 space-y-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
-              <div className="flex items-center gap-2 text-emerald-200">
+            <div className="mt-4 space-y-3 rounded-xl border border-[#ff8d42]/20 bg-[#ff8d42]/5 p-3">
+              <div className="flex items-center gap-2 text-[#ffb07b]">
                 <Check className="h-4 w-4" />
                 <span className="font-medium">Six faces captured.</span>
               </div>
-              <div className="rounded-lg border border-white/10 bg-slate-950/70 p-3 font-mono text-[11px] text-slate-200 break-all">
+              <div className="rounded-lg border border-white/10 bg-[#0d1117]/80 p-3 font-mono text-[11px] text-slate-200 break-all">
                 {buildFacelets(captures)}
               </div>
               <button type="button" onClick={() => void validateFacelets()} className="inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-slate-200">
@@ -484,22 +484,22 @@ export default function Scanner() {
                 </select>
               </label>
               {validation && (
-                <div className={`rounded-lg border px-3 py-2 text-sm ${validation.valid ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200" : "border-amber-500/30 bg-amber-500/10 text-amber-200"}`}>
+                <div className={`rounded-lg border px-3 py-2 text-sm ${validation.valid ? "border-[#ff8d42]/30 bg-[#ff8d42]/10 text-[#ffb07b]" : "border-amber-500/30 bg-amber-500/10 text-amber-200"}`}>
                   {validation.message}
                 </div>
               )}
               {solve && (
-                <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-100">
+                <div className="rounded-lg border border-[#ff8d42]/30 bg-[#ff8d42]/10 p-3 text-sm text-[#ffb07b]">
                   <div className="font-medium">Solution</div>
                   <div className="mt-1 font-mono text-xs break-all">{solve.solution}</div>
-                  <div className="mt-2 text-xs text-emerald-200/90">{solve.moveCount} moves · {solve.method}</div>
+                  <div className="mt-2 text-xs text-[#ffb07b]/90">{solve.moveCount} moves · {solve.method}</div>
                   {solve.stages?.length > 0 && (
-                    <div className="mt-3 space-y-1 border-t border-emerald-500/20 pt-2">
-                      <div className="text-xs font-medium text-emerald-200">Stages and algorithms</div>
+                    <div className="mt-3 space-y-1 border-t border-[#ff8d42]/20 pt-2">
+                      <div className="text-xs font-medium text-[#ffb07b]">Stages and algorithms</div>
                       {solve.stages.map((stage) => (
                         <div key={stage.name} className="flex items-start justify-between gap-3 text-xs">
-                          <span className="text-emerald-200/80">{stage.name}</span>
-                          <span className="font-mono text-right text-emerald-100">{stage.moves || "—"}</span>
+                          <span className="text-[#ffb07b]/80">{stage.name}</span>
+                          <span className="font-mono text-right text-[#ffb07b]">{stage.moves || "—"}</span>
                         </div>
                       ))}
                     </div>

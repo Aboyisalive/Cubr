@@ -24,18 +24,10 @@ interface UiState {
 }
 
 function readInitialTheme(): Theme {
-  if (typeof document !== "undefined") {
-    const attr = document.documentElement.getAttribute("data-theme");
-    if (attr === "light" || attr === "dark") return attr;
-  }
   return "dark";
 }
 
 function readInitialVisualTheme(): VisualTheme {
-  if (typeof document !== "undefined") {
-    const attr = document.documentElement.getAttribute("data-visual-theme");
-    if (attr === "liquid-glass" || attr === "material3") return attr;
-  }
   return "liquid-glass";
 }
 

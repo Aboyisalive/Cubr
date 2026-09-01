@@ -114,8 +114,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Space Grotesk"', "system-ui", "sans-serif"],
-        body: ['"Inter"', "system-ui", "sans-serif"],
+        display: ['"Poppins"', "system-ui", "sans-serif"],
+        body: ['"Poppins"', "system-ui", "sans-serif"],
       },
       // --- Type scale ---
       fontSize: {

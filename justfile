@@ -35,21 +35,21 @@ clean:
 codegen:
     @echo "not implemented yet: codegen -> F0.3 (OpenAPI contract + generated clients)" >&2; exit 2
 
-# Build backend, web and mobile (F0.2+)
+# Build what exists so far (backend since F0.2; web/mobile join later)
 build:
-    @echo "not implemented yet: build -> F0.2 (backend), F0.5 (web), F0.10 (mobile)" >&2; exit 2
+    cd backend && go build -o bin/cubr-api ./cmd/api
 
-# Run all test suites incl. golden vectors (F0.2+)
+# Run test suites that exist so far (backend since F0.2)
 test:
-    @echo "not implemented yet: test -> F0.2 (backend), F1.x (golden vectors), F0.5/F0.10 (clients)" >&2; exit 2
+    cd backend && go test ./...
 
-# Lint Go, Kotlin and TypeScript (F0.4)
+# Lint what exists so far (backend since F0.2; full CI gates in F0.4)
 lint:
-    @echo "not implemented yet: lint -> F0.4 (CI)" >&2; exit 2
+    cd backend && go vet ./...
 
-# Format all sources (F0.4)
+# Format what exists so far (backend since F0.2)
 fmt:
-    @echo "not implemented yet: fmt -> F0.4 (CI)" >&2; exit 2
+    cd backend && gofmt -w .
 
 # Scaffold verify plus every CI gate (F0.4)
 check: verify
@@ -57,7 +57,7 @@ check: verify
 
 # Run the Go API locally (F0.2)
 dev-backend:
-    @echo "not implemented yet: dev-backend -> F0.2 (Go backend skeleton)" >&2; exit 2
+    cd backend && go run ./cmd/api
 
 # Run the web client dev server (F0.5)
 dev-web:
@@ -69,11 +69,11 @@ dev-android:
 
 # Start local Postgres + backend via Docker Compose (F0.2)
 db-up:
-    @echo "not implemented yet: db-up -> F0.2 (infra / Docker Compose)" >&2; exit 2
+    if command -v docker >/dev/null 2>&1; then docker compose -f infra/docker-compose.yml up --build -d; else podman compose -f infra/docker-compose.yml up --build -d; fi
 
 # Stop local Postgres + backend (F0.2)
 db-down:
-    @echo "not implemented yet: db-down -> F0.2 (infra / Docker Compose)" >&2; exit 2
+    if command -v docker >/dev/null 2>&1; then docker compose -f infra/docker-compose.yml down; else podman compose -f infra/docker-compose.yml down; fi
 
 # Regenerate cube-core golden vectors (F1.4)
 golden:

@@ -65,15 +65,15 @@ shares one command vocabulary:
 | `just verify` | Scaffold structure check | F0.1 ✅ |
 | `just doctor` | Toolchain presence report | F0.1 ✅ |
 | `just codegen` | Regenerate Go / Kotlin / TypeScript clients from the OpenAPI spec | F0.3 |
-| `just build` | Build backend, web and mobile | F0.2+ (per client) |
-| `just test` | Run all test suites, incl. golden vectors | F0.2+ (per client) |
-| `just lint` | Lint Go, Kotlin and TypeScript | F0.4 |
-| `just fmt` | Format all sources | F0.4 |
+| `just build` | Build backend, web and mobile | backend ✅ (F0.2); web/mobile join later |
+| `just test` | Run all test suites, incl. golden vectors | backend ✅ (F0.2) |
+| `just lint` | Lint Go, Kotlin and TypeScript | backend ✅ (F0.2); full gates F0.4 |
+| `just fmt` | Format all sources | backend ✅ (F0.2) |
 | `just check` | `verify` plus every gate CI runs | F0.4 |
-| `just dev-backend` | Run the Go API locally | F0.2 |
+| `just dev-backend` | Run the Go API locally | F0.2 ✅ |
 | `just dev-web` | Run the web client dev server | F0.5 |
 | `just dev-android` | Build/install the Android app | F0.10 |
-| `just db-up` / `just db-down` | Start/stop local Postgres + backend via Compose | F0.2 |
+| `just db-up` / `just db-down` | Start/stop local Postgres + backend via Compose | F0.2 ✅ |
 | `just golden` | Regenerate cube-core golden vectors | F1.4 |
 | `just bench-scan` | Run the scan-accuracy benchmark | F2.6 |
 | `just clean` | Remove local build output | F0.1 ✅ |
@@ -98,8 +98,9 @@ One fragment at a time, in the order of section 9 of the product spec. Rules:
 
 ## Fragments (current)
 
-- **F0.1** Repo scaffold — this fragment.
-- Next: **F0.2** Go backend skeleton (`net/http`, `slog`, `/healthz`,
-  distroless Dockerfile, Docker Compose with Postgres).
+- **F0.1** Repo scaffold — done.
+- **F0.2** Go backend skeleton (`net/http`, `slog`, `/healthz`, distroless
+  Dockerfile, Docker Compose with Postgres) — done.
+- Next: **F0.3** OpenAPI contract v0 + generated Go/Kotlin/TypeScript clients.
 
 Full fragment list: section 9 of the product spec.

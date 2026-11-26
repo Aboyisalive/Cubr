@@ -10,7 +10,7 @@ import (
 )
 
 func testHandler() http.Handler {
-	return New(slog.New(slog.NewTextHandler(io.Discard, nil)))
+	return New(slog.New(slog.NewTextHandler(io.Discard, nil)), Options{})
 }
 
 func get(t *testing.T, path string) *httptest.ResponseRecorder {

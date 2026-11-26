@@ -79,11 +79,23 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
   - [x] Themed blank page (logo, toggle, token-driven surfaces)
   - [x] Tests: theme resolution unit tests (vitest)
   - [x] Wire `just` + CI web job; verify lint/typecheck/test/build
-- [ ] **F0.6 Waitlist API** — OpenAPI contract first + regenerate clients,
+- [x] **F0.6 Waitlist API** — OpenAPI contract first + regenerate clients,
   Postgres migration (unique index on lowercased email), Go handler, rate
   limit. Duplicate email = silent success; invalid email = typed error.
   Done when: tests cover new/duplicate/invalid email; generated TS client
-  compiles.
+  compiles. ✅ verified 2026-11-26: handler unit tests (new/duplicate —
+  byte-identical response, invalid table, malformed bodies, 429 +
+  Retry-After, 503, generic 500), integration test against real Postgres
+  (migration, unique `lower(email)` index rejects raw case-variant
+  insert), live HTTP run new→200 / duplicate→200 / invalid→400
+  `INVALID_EMAIL`, TS client regenerated + compiled, `just check` green.
+  - [x] Contract: `POST /waitlist` already defined in F0.3 — verify + regen
+  - [x] Postgres migration: waitlist table, unique index on `lower(email)`
+  - [x] Go handler: validation, typed errors, silent duplicate success
+  - [x] Per-IP rate limiting (429 typed error + Retry-After)
+  - [x] Tests: new / duplicate / invalid (+ malformed, rate-limited)
+  - [x] Integration test vs real Postgres (migration + insert + duplicate)
+  - [x] Verify: TS client compiles, full `just check`
 - [ ] **F0.7 Landing page** — hero (Reference A layout + LiquidButton,
   Reference B shader background), copy placeholders as briefed, four-step
   core loop, feature highlights, final CTA, footer. One shared signup modal

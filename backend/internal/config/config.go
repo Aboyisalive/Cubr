@@ -23,6 +23,9 @@ type Config struct {
 	DatabaseURL     string
 	LogLevel        slog.Level
 	ShutdownTimeout time.Duration
+	// Waitlist rate limiting (F0.6): requests per minute per IP, plus burst.
+	WaitlistRatePerMinute int
+	WaitlistRateBurst     int
 }
 
 // Addr returns the listen address for the HTTP server.
@@ -38,10 +41,12 @@ func Load() (Config, error) {
 // LoadFrom is Load with an injectable environment lookup (for tests).
 func LoadFrom(getenv func(string) string) (Config, error) {
 	cfg := Config{
-		Port:            8080,
-		DatabaseURL:     getenv("DATABASE_URL"),
-		LogLevel:        slog.LevelInfo,
-		ShutdownTimeout: 10 * time.Second,
+		Port:                  8080,
+		DatabaseURL:           getenv("DATABASE_URL"),
+		LogLevel:              slog.LevelInfo,
+		ShutdownTimeout:       10 * time.Second,
+		WaitlistRatePerMinute: 10,
+		WaitlistRateBurst:     5,
 	}
 
 	if raw := getenv("PORT"); raw != "" {
@@ -58,6 +63,22 @@ func LoadFrom(getenv func(string) string) (Config, error) {
 			return Config{}, fmt.Errorf("%w: LOG_LEVEL %q: %v", ErrInvalidConfig, raw, err)
 		}
 		cfg.LogLevel = level
+	}
+
+	for _, item := range []struct {
+		env  string
+		dest *int
+	}{
+		{"WAITLIST_RATE_PER_MINUTE", &cfg.WaitlistRatePerMinute},
+		{"WAITLIST_RATE_BURST", &cfg.WaitlistRateBurst},
+	} {
+		if raw := getenv(item.env); raw != "" {
+			value, err := strconv.Atoi(raw)
+			if err != nil || value < 1 {
+				return Config{}, fmt.Errorf("%w: %s %q is not a positive integer", ErrInvalidConfig, item.env, raw)
+			}
+			*item.dest = value
+		}
 	}
 
 	if raw := getenv("SHUTDOWN_TIMEOUT"); raw != "" {

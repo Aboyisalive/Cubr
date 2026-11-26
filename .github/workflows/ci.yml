@@ -22,6 +22,20 @@ jobs:
   go:
     name: Go (backend + generated stubs)
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: cubr
+          POSTGRES_PASSWORD: cubr
+          POSTGRES_DB: cubr
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cubr -d cubr"
+          --health-interval 2s --health-timeout 2s --health-retries 15
+    env:
+      TEST_DATABASE_URL: postgres://cubr:cubr@localhost:5432/cubr?sslmode=disable
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5

@@ -65,6 +65,8 @@ func TestLoadInvalidValues(t *testing.T) {
 		"bad log level":     {"LOG_LEVEL": "verbose"},
 		"bad timeout":       {"SHUTDOWN_TIMEOUT": "soon"},
 		"negative timeout":  {"SHUTDOWN_TIMEOUT": "-1s"},
+		"zero rate limit":   {"WAITLIST_RATE_PER_MINUTE": "0"},
+		"bad burst":         {"WAITLIST_RATE_BURST": "many"},
 	}
 	for name, values := range cases {
 		t.Run(name, func(t *testing.T) {

@@ -12,11 +12,20 @@ import (
 	"time"
 )
 
+// Options carries optional route groups. Waitlist is the POST /waitlist
+// handler (F0.6); when nil the route is not registered.
+type Options struct {
+	Waitlist http.Handler
+}
+
 // New returns the root HTTP handler with routes and middleware applied.
-func New(logger *slog.Logger) http.Handler {
+func New(logger *slog.Logger, opts Options) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", healthz)
 	mux.HandleFunc("GET /readyz", healthz)
+	if opts.Waitlist != nil {
+		mux.Handle("POST /waitlist", opts.Waitlist)
+	}
 	return logRequests(logger, mux)
 }
 

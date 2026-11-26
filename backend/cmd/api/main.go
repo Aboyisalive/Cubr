@@ -12,7 +12,9 @@ import (
 	"time"
 
 	"cubr/backend/internal/config"
+	"cubr/backend/internal/db"
 	"cubr/backend/internal/httpapi"
+	"cubr/backend/internal/waitlist"
 )
 
 func main() {
@@ -31,14 +33,32 @@ func run() error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: cfg.LogLevel}))
 	slog.SetDefault(logger)
 
-	server := &http.Server{
-		Addr:              cfg.Addr(),
-		Handler:           httpapi.New(logger),
-		ReadHeaderTimeout: 5 * time.Second,
-	}
-
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+
+	// Waitlist (F0.6): enabled when a database is configured. Without one,
+	// the endpoint answers a typed 503 and /healthz keeps working anywhere.
+	waitlistHandler := waitlist.NewHandler(nil, waitlist.NewRateLimiter(cfg.WaitlistRatePerMinute, cfg.WaitlistRateBurst), logger)
+	if cfg.DatabaseURL != "" {
+		pool, err := db.Connect(ctx, cfg.DatabaseURL)
+		if err != nil {
+			return err
+		}
+		defer pool.Close()
+		if err := db.Migrate(ctx, pool); err != nil {
+			return err
+		}
+		logger.Info("database ready, waitlist enabled")
+		waitlistHandler = waitlist.NewHandler(waitlist.NewPostgresStore(pool), waitlist.NewRateLimiter(cfg.WaitlistRatePerMinute, cfg.WaitlistRateBurst), logger)
+	} else {
+		logger.Warn("DATABASE_URL not set: waitlist endpoint will return 503")
+	}
+
+	server := &http.Server{
+		Addr:              cfg.Addr(),
+		Handler:           httpapi.New(logger, httpapi.Options{Waitlist: waitlistHandler}),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
 
 	errCh := make(chan error, 1)
 	go func() {

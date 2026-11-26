@@ -1,0 +1,273 @@
+openapi: 3.0.3
+info:
+  title: cubr API
+  version: 0.1.0
+  description: |
+    Contract v0. Single source of truth between the Go backend and the
+    Kotlin (KMP) and TypeScript clients. Contract first: fragments that
+    touch the API change this file and regenerate clients before writing
+    server or client code.
+
+    Conventions:
+    - `CubeState.facelets` is the 54-sticker facelet string in URFDLB order
+      (faces U, R, F, D, L, B; row-major within each face). Each character
+      names the home face of that sticker's color.
+    - Errors are always the typed `ErrorResponse` shape.
+servers:
+  - url: http://localhost:8080
+    description: Local development (just db-up / just dev-backend)
+
+paths:
+  /healthz:
+    get:
+      operationId: getHealth
+      summary: Liveness probe
+      responses:
+        '200':
+          description: Service is up
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /readyz:
+    get:
+      operationId: getReadiness
+      summary: Readiness probe
+      responses:
+        '200':
+          description: Service is ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /waitlist:
+    post:
+      operationId: joinWaitlist
+      summary: Join the waitlist
+      description: |
+        Duplicate emails return the same success response as new signups
+        (silent success) — the client cannot tell the difference.
+        Rate limited (F0.6).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaitlistRequest'
+      responses:
+        '200':
+          description: Subscribed (new or duplicate)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaitlistResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /solve:
+    post:
+      operationId: solveCube
+      summary: Solve a cube state (endpoint lands in F3.8; contract defined here)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolveRequest'
+      responses:
+        '200':
+          description: Ordered, structured solution steps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          description: Cube state is well-formed but invalid or unsolvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  responses:
+    BadRequest:
+      description: Malformed request or validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, service]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+        service:
+          type: string
+          example: cubr-api
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Stable machine-readable error code (e.g. INVALID_EMAIL, INVALID_CUBE_STATE)
+              example: INVALID_EMAIL
+            message:
+              type: string
+              description: Human-readable detail; safe to display
+            details:
+              type: object
+              additionalProperties:
+                type: string
+              description: Optional flat string context for the error (kept serializable on every client)
+
+    CubeState:
+      type: object
+      required: [facelets, version]
+      properties:
+        facelets:
+          type: string
+          pattern: '^[URFDLB]{54}$'
+          description: 54 stickers, faces in U R F D L B order, row-major per face
+          example: UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB
+        version:
+          type: integer
+          minimum: 1
+          description: CubeState schema version
+          example: 1
+
+    ScanResult:
+      type: object
+      required: [state, confidences, warnings]
+      properties:
+        state:
+          $ref: '#/components/schemas/CubeState'
+        confidences:
+          type: array
+          description: Per-sticker classifier confidence, same order as `state.facelets`
+          items:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 1
+          minItems: 54
+          maxItems: 54
+        warnings:
+          type: array
+          items:
+            type: string
+          description: Non-fatal scan issues (e.g. low light on one face)
+
+    WaitlistRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+          example: cuber@example.com
+
+    WaitlistResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [subscribed]
+
+    SolveMethod:
+      type: string
+      enum: [LBL, CFOP]
+      default: LBL
+
+    SolveRequest:
+      type: object
+      required: [state]
+      properties:
+        state:
+          $ref: '#/components/schemas/CubeState'
+        method:
+          $ref: '#/components/schemas/SolveMethod'
+
+    Move:
+      type: string
+      pattern: "^[URFDLB]['2]?$"
+      description: Singmaster notation, e.g. R, U', F2
+      example: R
+
+    SolveStep:
+      type: object
+      required: [phase, name, moves, explanationKey, affectedPieces, stateAfter]
+      properties:
+        phase:
+          type: string
+          description: Solver phase identifier (e.g. cross, f2l, oll, pll; method-specific)
+          example: cross
+        name:
+          type: string
+          example: Solve the white cross
+        moves:
+          type: array
+          items:
+            $ref: '#/components/schemas/Move'
+        explanationKey:
+          type: string
+          description: Key into the guide copy table (F4.1), not display text
+          example: lbl.cross.intro
+        affectedPieces:
+          type: array
+          description: Cubie names the step moves (e.g. UF, UFR)
+          items:
+            type: string
+          example: [UF]
+        stateAfter:
+          $ref: '#/components/schemas/CubeState'
+
+    SolveResponse:
+      type: object
+      required: [method, steps]
+      properties:
+        method:
+          $ref: '#/components/schemas/SolveMethod'
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SolveStep'
+
+    GuideStep:
+      description: A SolveStep enriched for display by the guide engine (F4.1)
+      allOf:
+        - $ref: '#/components/schemas/SolveStep'
+        - type: object
+          required: [displayText, highlightTargets, animationDurationMs]
+          properties:
+            displayText:
+              type: string
+              description: Plain-language explanation shown to the learner
+            highlightTargets:
+              type: array
+              description: Pieces/faces to highlight in the 3D view during this step
+              items:
+                type: string
+            animationDurationMs:
+              type: integer
+              minimum: 0
+              description: Suggested 3D animation duration for the step's moves

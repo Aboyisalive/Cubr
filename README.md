@@ -64,7 +64,7 @@ shares one command vocabulary:
 | --- | --- | --- |
 | `just verify` | Scaffold structure check | F0.1 ✅ |
 | `just doctor` | Toolchain presence report | F0.1 ✅ |
-| `just codegen` | Regenerate Go / Kotlin / TypeScript clients from the OpenAPI spec | F0.3 |
+| `just codegen` | Regenerate Go / Kotlin / TypeScript clients from the OpenAPI spec | F0.3 ✅ |
 | `just build` | Build backend, web and mobile | backend ✅ (F0.2); web/mobile join later |
 | `just test` | Run all test suites, incl. golden vectors | backend ✅ (F0.2) |
 | `just lint` | Lint Go, Kotlin and TypeScript | backend ✅ (F0.2); full gates F0.4 |
@@ -101,6 +101,8 @@ One fragment at a time, in the order of section 9 of the product spec. Rules:
 - **F0.1** Repo scaffold — done.
 - **F0.2** Go backend skeleton (`net/http`, `slog`, `/healthz`, distroless
   Dockerfile, Docker Compose with Postgres) — done.
-- Next: **F0.3** OpenAPI contract v0 + generated Go/Kotlin/TypeScript clients.
+- **F0.3** OpenAPI contract v0 + generated Go/Kotlin/TypeScript clients — done.
+- Next: **F0.4** CI (Go tests/lint, TS typecheck/lint/build, Kotlin build,
+  bundle-size check).
 
 Full fragment list: section 9 of the product spec.

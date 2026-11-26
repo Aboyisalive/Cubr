@@ -33,7 +33,7 @@ clean:
 
 # Regenerate Go/Kotlin/TypeScript clients from the OpenAPI spec (F0.3)
 codegen:
-    @echo "not implemented yet: codegen -> F0.3 (OpenAPI contract + generated clients)" >&2; exit 2
+    bash scripts/codegen.sh
 
 # Build what exists so far (backend since F0.2; web/mobile join later)
 build:

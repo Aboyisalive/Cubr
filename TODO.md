@@ -29,10 +29,21 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
   - [x] Wire `just` recipes (dev-backend, db-up/db-down, build/test/lint/fmt)
   - [x] Verify: `go test ./...`, server serves `/healthz` locally,
         container build + compose up serves `/healthz`
-- [ ] **F0.3 OpenAPI contract v0** — health, waitlist, `CubeState`,
+- [x] **F0.3 OpenAPI contract v0** — health, waitlist, `CubeState`,
   `ScanResult`, `SolveRequest`/`SolveResponse`, `SolveStep`, `GuideStep`
   + generated Go/Kotlin/TypeScript clients.
   Done when: codegen runs in one command, all three outputs compile.
+  ✅ verified 2026-11-26: `just codegen` regenerated all three from
+  scratch and each compiled (Go `go build`, TS strict `tsc`, Kotlin
+  `gradle compileKotlin` with Ktor + kotlinx.serialization). Codegen
+  caught a contract bug (unserializable free-form error `details`);
+  fixed to flat string map in v0.
+  - [x] Write `shared/api/openapi.yaml` (3.0.3, typed errors)
+  - [x] Go server stubs via oapi-codegen → compile
+  - [x] TypeScript client via @hey-api/openapi-ts → `tsc` compile
+  - [x] Kotlin client (Ktor + kotlinx.serialization) → Gradle compile
+  - [x] `just codegen` runs all three in one command
+  - [x] Verify fresh regeneration compiles all three outputs
 - [ ] **F0.4 CI** — Go tests+lint, TS typecheck/lint/build, Kotlin build,
   web bundle-size check.
   Done when: a PR runs all checks green.

@@ -1,0 +1,9 @@
+# oapi-codegen config for the Go server stubs.
+# Input: shared/api/openapi.yaml — Output: shared/api/gen/go/api.gen.go
+package: api
+output: gen/go/api.gen.go
+generate:
+  models: true
+  std-http-server: true
+output-options:
+  skip-prune: true

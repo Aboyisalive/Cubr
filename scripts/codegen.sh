@@ -27,6 +27,7 @@ java -jar "$GENERATOR_JAR" generate \
   -i "$API/openapi.yaml" -g kotlin -o "$API/gen/kotlin" \
   --additional-properties library=jvm-ktor,serializationLibrary=kotlinx_serialization,apiPackage=com.cubr.api.apis,modelPackage=com.cubr.api.models,packageName=com.cubr.api,groupId=com.cubr,artifactId=cubr-api-client,artifactVersion=0.1.0 \
   >/dev/null
+chmod +x "$API/gen/kotlin/gradlew" 2>/dev/null || true
 if [ -d "$HOME/.local/cubr-toolchain/jdk21" ]; then
   export JAVA_HOME="${JAVA_HOME:-$HOME/.local/cubr-toolchain/jdk21}"
 fi

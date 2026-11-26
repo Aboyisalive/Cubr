@@ -69,7 +69,7 @@ shares one command vocabulary:
 | `just test` | Run all test suites, incl. golden vectors | backend ✅ (F0.2) |
 | `just lint` | Lint Go, Kotlin and TypeScript | backend ✅ (F0.2); full gates F0.4 |
 | `just fmt` | Format all sources | backend ✅ (F0.2) |
-| `just check` | `verify` plus every gate CI runs | F0.4 |
+| `just check` | `verify` plus every gate CI runs | F0.4 ✅ |
 | `just dev-backend` | Run the Go API locally | F0.2 ✅ |
 | `just dev-web` | Run the web client dev server | F0.5 |
 | `just dev-android` | Build/install the Android app | F0.10 |
@@ -102,7 +102,9 @@ One fragment at a time, in the order of section 9 of the product spec. Rules:
 - **F0.2** Go backend skeleton (`net/http`, `slog`, `/healthz`, distroless
   Dockerfile, Docker Compose with Postgres) — done.
 - **F0.3** OpenAPI contract v0 + generated Go/Kotlin/TypeScript clients — done.
-- Next: **F0.4** CI (Go tests/lint, TS typecheck/lint/build, Kotlin build,
-  bundle-size check).
+- **F0.4** CI (`.github/workflows/ci.yml`: scaffold, Go, TypeScript, Kotlin,
+  contract freshness, bundle-size) — done.
+- Next: **F0.5** Web scaffold (Vite, React, strict TS, Tailwind v4,
+  shadcn/ui, design tokens, fonts).
 
 Full fragment list: section 9 of the product spec.

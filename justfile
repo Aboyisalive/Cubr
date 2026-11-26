@@ -35,25 +35,44 @@ clean:
 codegen:
     bash scripts/codegen.sh
 
-# Build what exists so far (backend since F0.2; web/mobile join later)
+# Build what exists so far (backend F0.2, generated clients F0.3; web/mobile join later)
 build:
     cd backend && go build -o bin/cubr-api ./cmd/api
+    cd shared/api/gen/go && go build ./...
+    cd shared/api/gen/typescript && npm run build
 
-# Run test suites that exist so far (backend since F0.2)
+# Run test suites that exist so far (backend F0.2, generated Go stubs F0.3)
 test:
     cd backend && go test ./...
+    cd shared/api/gen/go && go test ./...
 
-# Lint what exists so far (backend since F0.2; full CI gates in F0.4)
+# Lint what exists so far (Go F0.2/F0.3, TypeScript F0.3; full CI in F0.4)
 lint:
-    cd backend && go vet ./...
+    cd backend && go vet ./... && test -z "$(gofmt -l .)"
+    cd shared/api/gen/go && go vet ./... && test -z "$(gofmt -l .)"
+    cd shared/api/gen/typescript && npm run lint
 
 # Format what exists so far (backend since F0.2)
 fmt:
     cd backend && gofmt -w .
 
-# Scaffold verify plus every CI gate (F0.4)
-check: verify
-    @echo "not implemented yet: check -> F0.4 (CI gates beyond 'verify')" >&2; exit 2
+# Check the JS bundle size against the 150 KB gz budget (F0.4)
+bundle-size: build
+    python3 scripts/check-bundle-size.py
+
+# Compile the generated Kotlin client (F0.3/F0.4)
+kotlin-build:
+    if [ -d "$HOME/.local/cubr-toolchain/jdk21" ]; then export JAVA_HOME="${JAVA_HOME:-$HOME/.local/cubr-toolchain/jdk21}"; fi; cd shared/api/gen/kotlin && gradle compileKotlin --no-daemon -q
+
+# Scaffold verify plus every CI gate (F0.4): mirrors .github/workflows/ci.yml
+check:
+    just verify
+    just test
+    just lint
+    just build
+    just kotlin-build
+    python3 scripts/check-bundle-size.py
+    @echo "check: all gates passed"
 
 # Run the Go API locally (F0.2)
 dev-backend:

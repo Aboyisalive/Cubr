@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scaffold:
+    name: Scaffold verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/verify_scaffold.py
+
+  go:
+    name: Go (backend + generated stubs)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: |
+            backend/go.sum
+            shared/api/gen/go/go.sum
+      - name: gofmt check
+        run: |
+          test -z "$(gofmt -l backend shared/api/gen/go)" || { gofmt -l backend shared/api/gen/go; exit 1; }
+      - name: vet
+        run: |
+          cd backend && go vet ./...
+          cd ../shared/api/gen/go && go vet ./...
+      - name: test
+        run: |
+          cd backend && go test ./...
+          cd ../shared/api/gen/go && go test ./...
+
+  typescript:
+    name: TypeScript (generated client)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shared/api/gen/typescript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: shared/api/gen/typescript/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - name: bundle size (< 150 KB gz)
+        working-directory: ${{ github.workspace }}
+        run: python3 scripts/check-bundle-size.py
+
+  kotlin:
+    name: Kotlin (generated client)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shared/api/gen/kotlin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: compile
+        run: ./gradlew compileKotlin --no-daemon
+
+  codegen:
+    name: Contract freshness (codegen is reproducible)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: shared/api/gen/typescript/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: extractions/setup-just@v3
+      - name: Install codegen tools
+        run: |
+          export GOBIN="$HOME/.local/bin"
+          go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.9.0
+          mkdir -p "$HOME/.local/cubr-toolchain"
+          curl -sL -o "$HOME/.local/cubr-toolchain/openapi-generator-cli.jar" \
+            https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.27.0/openapi-generator-cli-7.27.0.jar
+      - name: Regenerate and verify no drift
+        run: |
+          just codegen
+          git diff --exit-code || { echo "generated clients are stale: run 'just codegen' and commit the result"; exit 1; }

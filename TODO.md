@@ -44,9 +44,19 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
   - [x] Kotlin client (Ktor + kotlinx.serialization) → Gradle compile
   - [x] `just codegen` runs all three in one command
   - [x] Verify fresh regeneration compiles all three outputs
-- [ ] **F0.4 CI** — Go tests+lint, TS typecheck/lint/build, Kotlin build,
+- [x] **F0.4 CI** — Go tests+lint, TS typecheck/lint/build, Kotlin build,
   web bundle-size check.
-  Done when: a PR runs all checks green.
+  Done when: a PR runs all checks green. ✅ verified locally 2026-11-26:
+  every CI job's steps executed on this machine and passed (`just check`
+  green, incl. bundle 10.7 KB gz / 150 KB; `npm ci` + lint/typecheck/build;
+  `./gradlew compileKotlin`; gofmt/vet/test). Cannot literally open a PR
+  (no commits/pushes without instruction) — first PR will exercise it.
+  - [x] `.github/workflows/ci.yml`: scaffold / go / typescript / kotlin /
+        codegen-freshness jobs
+  - [x] TS lint wired (eslint; generated `src/` excluded, per codegen practice)
+  - [x] `scripts/check-bundle-size.py` (150 KB gzip budget, web-first)
+  - [x] `just check` mirrors every CI gate locally
+  - [x] Verify: every CI step run locally, green; workflow YAML valid
 
 ## Fragments
 

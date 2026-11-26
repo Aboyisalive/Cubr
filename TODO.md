@@ -60,15 +60,14 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
 
 ## Fragments
 
-- [!] **F0.5 Web scaffold** — Vite, React, strict TypeScript, Tailwind v4,
+- [ ] **F0.5 Web scaffold** — Vite, React, strict TypeScript, Tailwind v4,
   shadcn/ui (Vite setup), `@` alias in vite config + tsconfig, `cn` in
   `lib/utils`, components in `components/ui`. Tokens (Primitives →
   Semantic/Light, Semantic/Dark) as CSS variables, self-hosted fonts,
   dark/light toggle respecting system preference.
   Done when: themed blank page toggles dark/light; lint, typecheck and
   build pass.
-  Blocked by: see "Blockers" below (F0.2–F0.4 state, Node toolchain,
-  token/logo sources).
+  Inputs ready: logo file, three design skills (see Blockers). Unblocked.
 - [ ] **F0.6 Waitlist API** — OpenAPI contract first + regenerate clients,
   Postgres migration (unique index on lowercased email), Go handler, rate
   limit. Duplicate email = silent success; invalid email = typed error.
@@ -113,12 +112,17 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
 - **Toolchains** — resolved locally: Go 1.27.4 and Node v26.13.1 installed
   under `~/.local/cubr-toolchain`. No Docker (no sudo); Podman is present
   and stands in for `docker compose up` verification.
-- **Design sources not yet handed over:** logo/token file path still
-  pending ("[path I'll give you]"); do not invent a logo. (Blocks the
-  token-exact parts of F0.5/F0.7, not F0.2–F0.4.)
-- **Skills not installed:** no `.opencode/skills/` in the repo and no
-  `frontend-design` / `cubr-dual-theme` skill available in this session.
-  (Relevant to F0.5/F0.7, not F0.2–F0.4.)
+- **Design sources:** logo received 2026-11-26 —
+  `/home/col/Documents/Assets/logos/Cubr-logo.png` (8037×7983 RGBA;
+  isometric cube, white top, orange star face, grey "CUBR" face, black
+  background). Token *files* not handed over: derive token values from the
+  spec (orange brand, neutrals, cube-face set, chrome ramp, status) in
+  F0.5, structured Primitives → Semantic/Light + Semantic/Dark, so real
+  token files can swap values in one place later. Do not invent a logo.
+- **Skills:** installed 2026-11-26 (project level, `.agents/skills/`):
+  `ux-designer` (szilu/ux-designer-skill), `canvas-design`
+  (anthropics/skills), `design-taste-frontend` (Leonxlnx/taste-skill).
+  User waived the other skills (`cubr-dual-theme`, `frontend-design`).
 
 ## Done
 

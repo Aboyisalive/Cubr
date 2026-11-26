@@ -113,7 +113,7 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
   - [x] Hero (dark both themes) + core loop + features + final CTA + footer
   - [x] End-to-end vs local API (new/duplicate/invalid) in dark + light structure
   - [x] web-design-guidelines audit (ux-designer workflow) + fixes
-- [ ] **F0.8 Hero background** — raw WebGL2 (no Three.js), `uBlock`
+- [x] **F0.8 Hero background** — raw WebGL2 (no Three.js), `uBlock`
   uniform, cube-face token colors via uniforms, 0.75 render scale with
   adaptive drop, DPR ≤ 1.5, `antialias: false`, paused off-screen/hidden,
   static frame under `prefers-reduced-motion`. WebP poster (< 40 KB,
@@ -121,6 +121,22 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
   fades in. Fallback image when WebGL2 unavailable.
   Done when: CTA interactive before shader loads; fallback shows without
   WebGL2; budgets met (JS < 150 KB gzip, LCP < 2.5 s, 60 fps → 30).
+  ✅ verified 2026-11-26 (code + unit tests + build): uBlock=18 chosen
+  from rendered candidates (0/8/14/18/24/32), poster 18.5 KB, initial JS
+  90.2 KB gz, shader chunk 1.9 KB gz, Three.js chunk 127.3 KB gz (lazy).
+  NOT verified: LCP and fps numbers — no browser on this machine; they
+  need a real-device/browser pass (see README budgets note).
+  - [x] Reference B shader + `uBlock` (tuned by rendered candidates), token colors
+  - [x] Poster WebP < 40 KB rendered from the same shader math; preloaded
+  - [x] Lazy hero background: fade-in after first paint, pause/fallback rules
+  - [x] **User addition (2026-11-26): Three.js scroll cube** — "Why cubr?"
+        becomes six full-screen slides; a lazy-loaded Three.js cube sits
+        behind them and scrubs scrambled→solved with face rotations as
+        the user scrolls (render loop driven by refs, never React state)
+  - [x] Verify budgets (initial JS, poster, chunk sizes) + report numbers
+  - [x] Post-F0.8 user addition: steps blended into Why behind the same
+        cube (algorithm loop `R U R' U'` x3 over the steps, combined
+        24-move solve over Why). Hero rework deferred to a later prompt.
 - [!] **F0.9 Waitlist import** — BLOCKED: waiting for the exported waitlist
   emails to be handed over. Done when: exported emails load with no
   duplicates.

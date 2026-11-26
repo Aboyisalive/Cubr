@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Bundle-size gate (spec section 6: initial JS < 150 KB gzipped).
 
-Measures the gzipped total of built JS. Target selection:
-  1. web/dist/assets (the real landing bundle; exists from F0.5/F0.7 on)
+Measures the gzipped size of the *initial* JS only: the Vite entry chunk
+(index-*.js). Lazy chunks (Three.js scroll cube, hero shader) are loaded
+after first paint / on approach and are reported for information but do
+not count against the initial-JS budget.
+
+Target selection:
+  1. web/dist/assets (the real landing bundle; exists from F0.5 on)
   2. shared/api/gen/typescript/dist (stand-in until the web app lands)
 
 Usage: python3 scripts/check-bundle-size.py [dist-dir]
@@ -40,11 +45,15 @@ def main() -> int:
         return 1
 
     files = sorted(dist.rglob("*.js"))
-    total = sum(gzipped_size(f) for f in files)
+    entry = [f for f in files if f.name.startswith("index-")] or files
+    lazy = [f for f in files if f not in entry]
+    total = sum(gzipped_size(f) for f in entry)
     print(f"bundle-size: {dist.relative_to(ROOT) if dist.is_relative_to(ROOT) else dist}")
-    for f in files:
-        print(f"  {f.name}: {gzipped_size(f) / 1024:.1f} KB gz")
-    print(f"bundle-size: total {total / 1024:.1f} KB gz / budget {BUDGET_BYTES // 1024} KB")
+    for f in entry:
+        print(f"  initial {f.name}: {gzipped_size(f) / 1024:.1f} KB gz")
+    for f in lazy:
+        print(f"  lazy    {f.name}: {gzipped_size(f) / 1024:.1f} KB gz (not counted)")
+    print(f"bundle-size: initial total {total / 1024:.1f} KB gz / budget {BUDGET_BYTES // 1024} KB")
     if total > BUDGET_BYTES:
         print("bundle-size: OVER BUDGET")
         return 1

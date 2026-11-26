@@ -9,6 +9,14 @@
       content="cubr — scan a scrambled Rubik's Cube, see it in 3D, and learn the solution one step at a time."
     />
     <title>cubr</title>
+    <!-- Hero poster: the LCP element and WebGL2 fallback (F0.8). -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/hero-poster.webp"
+      fetchpriority="high"
+    />
     <!-- Apply the saved/system theme before first paint (no flash). -->
     <script>
       try {

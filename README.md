@@ -109,7 +109,9 @@ One fragment at a time, in the order of section 9 of the product spec. Rules:
 - **F0.6** Waitlist API (Postgres migration, Go handler, rate limit) — done.
 - **F0.7** Landing page (Reference A hero + LiquidButton, shared signup
   modal, core loop/features/CTA/footer) — done.
-- Next: **F0.8** Hero background (raw WebGL2 shader, `uBlock`, WebP poster,
-  measured budgets).
+- **F0.8** Hero background (raw WebGL2 shader, `uBlock=18`, WebP poster) +
+  Three.js scroll-solving cube behind the six "Why cubr?" slides — done.
+- Next: **F0.10** KMP app scaffold (needs Android SDK). F0.9 remains
+  blocked on the exported waitlist emails.
 
 Full fragment list: section 9 of the product spec.

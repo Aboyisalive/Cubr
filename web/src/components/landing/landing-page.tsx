@@ -1,3 +1,4 @@
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import {
   Box,
   Camera,
@@ -10,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LiquidButton } from '@/components/ui/liquid-glass-button'
+import { SOLVE_NOTATION } from '@/components/landing/cube-scrub'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useWaitlist } from '@/components/waitlist/waitlist-modal'
 import logoUrl from '@/assets/cubr-logo.webp'
@@ -73,7 +75,7 @@ const FEATURES = [
 function SiteHeader() {
   const { openWaitlist } = useWaitlist()
   return (
-    <header className="flex items-center justify-between px-4 py-3 sm:px-6">
+    <header className="flex items-center justify-between bg-background/75 px-4 py-3 backdrop-blur-md sm:px-6">
       <a href="#top" className="flex items-center gap-3" aria-label="cubr home">
         <img src={logoUrl} alt="" width={36} height={36} className="rounded-lg" />
         <span className="font-heading text-xl font-bold tracking-tight">cubr</span>
@@ -99,25 +101,11 @@ function SiteHeader() {
 function Hero() {
   const { openWaitlist } = useWaitlist()
   return (
-    // The hero is dark in both themes: it will sit on the WebGL2 shader
+    // The hero is dark in both themes: it sits on the WebGL2 shader
     // (F0.8). Scoping `.dark` here flips the semantic tokens for this
     // section only, and Tailwind's dark: variant follows the same class.
-    <section className="dark bg-background text-foreground" aria-label="cubr">
+    <section className="dark text-foreground" aria-label="cubr">
       <div className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-24">
-        {/* Static stand-in for the F0.8 shader: a faint block grid. */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.35]"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, var(--border) 1px, transparent 1px), linear-gradient(to bottom, var(--border) 1px, transparent 1px)',
-            backgroundSize: '56px 56px',
-            maskImage:
-              'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)',
-            WebkitMaskImage:
-              'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)',
-          }}
-        />
         <div className="relative mx-auto w-full max-w-3xl border border-border p-2">
           <div className="border border-border px-4 py-10 sm:px-6 sm:py-12">
             <div className="mb-6 flex items-center justify-center gap-2">
@@ -153,71 +141,156 @@ function Hero() {
   )
 }
 
-function CoreLoop() {
-  return (
-    <section id="how" aria-labelledby="how-title" className="px-4 py-16 sm:px-6 sm:py-20">
-      <div className="mx-auto max-w-5xl">
-        <h2
-          id="how-title"
-          className="text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl"
-        >
-          From scrambled to solved, in four steps
-        </h2>
-        <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((step, index) => (
-            <li
-              key={step.title}
-              className="rounded-xl border border-border bg-card p-5 text-card-foreground"
-            >
-              <div className="flex items-center justify-between">
-                <step.icon aria-hidden className="size-6 text-primary" />
-                <span aria-hidden className="font-mono text-sm text-muted-foreground">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-              </div>
-              <h3 className="mt-4 font-heading text-lg font-semibold">{step.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                {step.text}
-              </p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  )
-}
+const ScrollCube = lazy(() => import('./scroll-cube'))
 
-function Features() {
+/**
+ * One blended scroll journey behind a single sticky cube:
+ * - the four "How it works" step slides cycle a repetitive algorithm
+ *   (R U R' U' x3) scrubbed over the already-scrambled cube, while the
+ * - six "Why cubr?" slides solve the combined state to solved.
+ * Scroll progress is written to a ref by a passive listener — React
+ * never re-renders for it. Three.js lazy-loads as the section nears.
+ */
+function Journey() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const progressRef = useRef(0)
+  const [cubeRequested, setCubeRequested] = useState(false)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const requester = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setCubeRequested(true)
+      },
+      { rootMargin: '800px' },
+    )
+    requester.observe(section)
+
+    let ticking = false
+    const update = () => {
+      ticking = false
+      const rect = section.getBoundingClientRect()
+      const total = Math.max(1, section.offsetHeight - window.innerHeight)
+      progressRef.current = Math.min(1, Math.max(0, -rect.top / total))
+    }
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(update)
+      }
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      requester.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
+
   return (
     <section
-      id="features"
-      aria-labelledby="features-title"
-      className="border-t border-border bg-muted/40 px-4 py-16 sm:px-6 sm:py-20"
+      ref={sectionRef}
+      aria-label="How cubr works and why"
+      className="relative border-t border-border bg-muted/30"
     >
-      <div className="mx-auto max-w-5xl">
-        <h2
-          id="features-title"
-          className="text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl"
-        >
+      <div id="how" className="scroll-mt-16 px-4 pt-16 sm:px-6 sm:pt-20">
+        <h2 className="text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+          From scrambled to solved, in four steps
+        </h2>
+        <p className="mx-auto mt-3 max-w-lg text-center text-base text-muted-foreground">
+          Keep scrolling — the cube behind you is working through an
+          algorithm, then solves itself while you read why cubr exists.
+        </p>
+      </div>
+
+      {/* Sticky cube stage behind all ten slides: the cube itself is
+          fully opaque, but it always stays behind the text (z-0 here,
+          slide content is z-10 with solid panels). */}
+      <div
+        aria-hidden
+        className="pointer-events-none sticky top-0 z-0 -mb-[100svh] h-[100svh] overflow-hidden"
+      >
+        <div className="absolute inset-0">
+          {cubeRequested && (
+            <Suspense fallback={null}>
+              <ScrollCube progressRef={progressRef} />
+            </Suspense>
+          )}
+        </div>
+      </div>
+
+      <ol className="relative z-10">
+        {STEPS.map((step, index) => (
+          <li
+            key={step.title}
+            className="flex min-h-[100svh] items-center px-4 py-16 sm:px-6"
+          >
+            <article
+              className={`w-full max-w-md rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm backdrop-blur ${
+                index % 2 === 0 ? 'mr-auto' : 'ml-auto'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <step.icon aria-hidden className="size-7 text-primary" />
+                <span className="font-mono text-sm text-muted-foreground">
+                  Step {index + 1} / 4
+                </span>
+              </div>
+              <h3 className="mt-4 font-heading text-2xl font-semibold">{step.title}</h3>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                {step.text}
+              </p>
+              <p className="mt-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                Algorithm: R U R&prime; U&prime; — cycle {index + 1} of 3
+              </p>
+            </article>
+          </li>
+        ))}
+      </ol>
+
+      <div id="features" className="relative z-10 scroll-mt-16 px-4 pt-8 sm:px-6">
+        <h2 className="text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl">
           Why cubr
         </h2>
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((feature) => (
-            <li
-              key={feature.title}
-              className="rounded-xl border border-border bg-card p-5 text-card-foreground"
+        <p className="mx-auto mt-3 max-w-lg text-center text-base text-muted-foreground">
+          Six reasons, one solving cube.
+        </p>
+      </div>
+
+      <ol className="relative z-10">
+        {FEATURES.map((feature, index) => (
+          <li
+            key={feature.title}
+            className="flex min-h-[100svh] items-center px-4 py-16 sm:px-6"
+          >
+            <article
+              className={`w-full max-w-md rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm backdrop-blur ${
+                index % 2 === 0 ? 'mr-auto' : 'ml-auto'
+              }`}
             >
-              <feature.icon aria-hidden className="size-6 text-primary" />
-              <h3 className="mt-4 font-heading text-lg font-semibold">
+              <div className="flex items-center justify-between">
+                <feature.icon aria-hidden className="size-7 text-primary" />
+                <span className="font-mono text-sm text-muted-foreground">
+                  {String(index + 1).padStart(2, '0')} / 06
+                </span>
+              </div>
+              <h3 className="mt-4 font-heading text-2xl font-semibold">
                 {feature.title}
               </h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
                 {feature.text}
               </p>
-            </li>
-          ))}
-        </ul>
-      </div>
+              <p className="mt-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                Solving: {SOLVE_NOTATION[index]}
+              </p>
+            </article>
+          </li>
+        ))}
+      </ol>
     </section>
   )
 }
@@ -225,7 +298,7 @@ function Features() {
 function FinalCta() {
   const { openWaitlist } = useWaitlist()
   return (
-    <section aria-labelledby="cta-title" className="dark bg-background px-4 py-16 text-foreground sm:px-6 sm:py-20">
+    <section aria-labelledby="cta-title" className="dark relative z-20 bg-background/85 px-4 py-16 text-foreground sm:px-6 sm:py-20">
       <div className="mx-auto max-w-3xl text-center">
         <h2
           id="cta-title"
@@ -253,7 +326,7 @@ function FinalCta() {
 
 function SiteFooter() {
   return (
-    <footer className="border-t border-border px-4 py-8 sm:px-6">
+    <footer className="relative z-20 border-t border-border bg-background/75 px-4 py-8 backdrop-blur-md sm:px-6">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 sm:flex-row">
         <div className="flex items-center gap-2.5">
           <img src={logoUrl} alt="" width={28} height={28} className="rounded-md" />
@@ -274,12 +347,11 @@ function SiteFooter() {
 
 export function LandingPage() {
   return (
-    <div id="top" className="min-h-svh bg-background text-foreground">
+    <div id="top" className="min-h-svh text-foreground">
       <SiteHeader />
       <main>
         <Hero />
-        <CoreLoop />
-        <Features />
+        <Journey />
         <FinalCta />
       </main>
       <SiteFooter />

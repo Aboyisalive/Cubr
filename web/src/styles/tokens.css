@@ -1,0 +1,124 @@
+/*
+ * cubr design tokens.
+ *
+ * Three layers, in order:
+ *   1. Primitives   — raw values (orange scale sampled from the logo's
+ *      #ff7200 star face, neutrals, cube-face colors, chrome ramp, status).
+ *   2. Semantic/Light — what each primitive means in light mode (:root).
+ *   3. Semantic/Dark  — the same meanings in dark mode (.dark).
+ *
+ * Components only ever use the semantic layer (via Tailwind utilities like
+ * bg-background / text-primary). When the exported token files arrive,
+ * only the primitive values below change.
+ */
+
+:root {
+  /* ---- Primitives: orange (brand) ---- */
+  --primitive-orange-50: #fff6ec;
+  --primitive-orange-100: #ffead3;
+  --primitive-orange-200: #ffd1a6;
+  --primitive-orange-300: #ffb066;
+  --primitive-orange-400: #ff8d2e;
+  --primitive-orange-500: #ff7200;
+  --primitive-orange-600: #f05e00;
+  --primitive-orange-700: #c74e00;
+  --primitive-orange-800: #9e3e05;
+  --primitive-orange-900: #7f3408;
+  --primitive-orange-950: #451a02;
+
+  /* ---- Primitives: neutrals ---- */
+  --primitive-neutral-0: #ffffff;
+  --primitive-neutral-50: #fafafa;
+  --primitive-neutral-100: #f4f4f5;
+  --primitive-neutral-200: #e4e4e7;
+  --primitive-neutral-300: #d4d4d8;
+  --primitive-neutral-400: #a1a1aa;
+  --primitive-neutral-500: #71717a;
+  --primitive-neutral-600: #52525b;
+  --primitive-neutral-700: #3f3f46;
+  --primitive-neutral-800: #27272a;
+  --primitive-neutral-900: #18181b;
+  --primitive-neutral-950: #09090b;
+
+  /* ---- Primitives: cube faces ---- */
+  --primitive-cube-white: #ffffff;
+  --primitive-cube-yellow: #ffd500;
+  --primitive-cube-red: #c9001b;
+  --primitive-cube-orange: var(--primitive-orange-500);
+  --primitive-cube-blue: #0057b8;
+  --primitive-cube-green: #009e60;
+
+  /* ---- Primitives: chrome ramp (metallic accent) ---- */
+  --primitive-chrome-100: #f4f4f5;
+  --primitive-chrome-300: #d4d4d8;
+  --primitive-chrome-500: #a8a8b3;
+  --primitive-chrome-700: #63636b;
+  --primitive-chrome-900: #26262b;
+
+  /* ---- Primitives: status ---- */
+  --primitive-status-success: #16a34a;
+  --primitive-status-warning: #eab308;
+  --primitive-status-error: #dc2626;
+  --primitive-status-info: #0284c7;
+
+  /* ---- Semantic/Light ---- */
+  --background: var(--primitive-neutral-0);
+  --foreground: var(--primitive-neutral-950);
+  --card: var(--primitive-neutral-0);
+  --card-foreground: var(--primitive-neutral-950);
+  --popover: var(--primitive-neutral-0);
+  --popover-foreground: var(--primitive-neutral-950);
+  --primary: var(--primitive-orange-500);
+  --primary-foreground: var(--primitive-neutral-950);
+  --secondary: var(--primitive-neutral-100);
+  --secondary-foreground: var(--primitive-neutral-900);
+  --muted: var(--primitive-neutral-100);
+  --muted-foreground: var(--primitive-neutral-600);
+  --accent: var(--primitive-chrome-100);
+  --accent-foreground: var(--primitive-neutral-900);
+  --destructive: var(--primitive-status-error);
+  --destructive-foreground: var(--primitive-neutral-0);
+  --success: var(--primitive-status-success);
+  --warning: var(--primitive-status-warning);
+  --info: var(--primitive-status-info);
+  --border: var(--primitive-neutral-200);
+  --input: var(--primitive-neutral-200);
+  --ring: var(--primitive-orange-500);
+
+  --cube-white: var(--primitive-cube-white);
+  --cube-yellow: var(--primitive-cube-yellow);
+  --cube-red: var(--primitive-cube-red);
+  --cube-orange: var(--primitive-cube-orange);
+  --cube-blue: var(--primitive-cube-blue);
+  --cube-green: var(--primitive-cube-green);
+
+  --radius: 0.625rem;
+  color-scheme: light;
+}
+
+.dark {
+  /* ---- Semantic/Dark ---- */
+  --background: var(--primitive-neutral-950);
+  --foreground: var(--primitive-neutral-50);
+  --card: var(--primitive-neutral-900);
+  --card-foreground: var(--primitive-neutral-50);
+  --popover: var(--primitive-neutral-900);
+  --popover-foreground: var(--primitive-neutral-50);
+  --primary: var(--primitive-orange-500);
+  --primary-foreground: var(--primitive-neutral-950);
+  --secondary: var(--primitive-neutral-800);
+  --secondary-foreground: var(--primitive-neutral-50);
+  --muted: var(--primitive-neutral-800);
+  --muted-foreground: var(--primitive-neutral-400);
+  --accent: var(--primitive-chrome-900);
+  --accent-foreground: var(--primitive-neutral-50);
+  --destructive: var(--primitive-status-error);
+  --destructive-foreground: var(--primitive-neutral-0);
+  --success: var(--primitive-status-success);
+  --warning: var(--primitive-status-warning);
+  --info: var(--primitive-status-info);
+  --border: var(--primitive-neutral-800);
+  --input: var(--primitive-neutral-800);
+  --ring: var(--primitive-orange-400);
+  color-scheme: dark;
+}

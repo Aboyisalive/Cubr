@@ -60,14 +60,25 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
 
 ## Fragments
 
-- [ ] **F0.5 Web scaffold** — Vite, React, strict TypeScript, Tailwind v4,
+- [x] **F0.5 Web scaffold** — Vite, React, strict TypeScript, Tailwind v4,
   shadcn/ui (Vite setup), `@` alias in vite config + tsconfig, `cn` in
   `lib/utils`, components in `components/ui`. Tokens (Primitives →
   Semantic/Light, Semantic/Dark) as CSS variables, self-hosted fonts,
   dark/light toggle respecting system preference.
   Done when: themed blank page toggles dark/light; lint, typecheck and
-  build pass.
-  Inputs ready: logo file, three design skills (see Blockers). Unblocked.
+  build pass. ✅ verified 2026-11-26: eslint, strict typecheck, vitest
+  (6 theme tests), production build all pass; `just check` green with the
+  web bundle at 80.2 KB gz (< 150 KB); preview server serves the app.
+  The toggle itself is browser-verified only by unit tests + the
+  pre-paint inline script — no browser automation on this machine.
+  - [x] Vite + React + strict TS scaffold in `web/` (`@` alias both configs)
+  - [x] Tailwind v4 + shadcn/ui setup (`components.json`, `lib/utils` cn, Button)
+  - [x] Token CSS: primitives → semantic light/dark as CSS variables
+  - [x] Self-hosted fonts (Space Grotesk, Inter, JetBrains Mono) + fallbacks
+  - [x] Theme provider: system preference, persisted, `.dark` class toggle
+  - [x] Themed blank page (logo, toggle, token-driven surfaces)
+  - [x] Tests: theme resolution unit tests (vitest)
+  - [x] Wire `just` + CI web job; verify lint/typecheck/test/build
 - [ ] **F0.6 Waitlist API** — OpenAPI contract first + regenerate clients,
   Postgres migration (unique index on lowercased email), Go handler, rate
   limit. Duplicate email = silent success; invalid email = typed error.

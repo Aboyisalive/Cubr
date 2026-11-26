@@ -35,22 +35,25 @@ clean:
 codegen:
     bash scripts/codegen.sh
 
-# Build what exists so far (backend F0.2, generated clients F0.3; web/mobile join later)
+# Build what exists so far (backend F0.2, generated clients F0.3, web F0.5)
 build:
     cd backend && go build -o bin/cubr-api ./cmd/api
     cd shared/api/gen/go && go build ./...
     cd shared/api/gen/typescript && npm run build
+    cd web && npm run build
 
-# Run test suites that exist so far (backend F0.2, generated Go stubs F0.3)
+# Run test suites that exist so far (backend F0.2, generated Go F0.3, web F0.5)
 test:
     cd backend && go test ./...
     cd shared/api/gen/go && go test ./...
+    cd web && npm test
 
-# Lint what exists so far (Go F0.2/F0.3, TypeScript F0.3; full CI in F0.4)
+# Lint what exists so far (Go F0.2/F0.3, TypeScript F0.3, web F0.5)
 lint:
     cd backend && go vet ./... && test -z "$(gofmt -l .)"
     cd shared/api/gen/go && go vet ./... && test -z "$(gofmt -l .)"
     cd shared/api/gen/typescript && npm run lint
+    cd web && npm run lint && npm run typecheck
 
 # Format what exists so far (backend since F0.2)
 fmt:
@@ -80,7 +83,7 @@ dev-backend:
 
 # Run the web client dev server (F0.5)
 dev-web:
-    @echo "not implemented yet: dev-web -> F0.5 (web scaffold)" >&2; exit 2
+    cd web && npm run dev
 
 # Build/install the Android app (F0.10)
 dev-android:

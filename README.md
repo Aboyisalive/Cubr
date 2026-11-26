@@ -71,7 +71,7 @@ shares one command vocabulary:
 | `just fmt` | Format all sources | backend ✅ (F0.2) |
 | `just check` | `verify` plus every gate CI runs | F0.4 ✅ |
 | `just dev-backend` | Run the Go API locally | F0.2 ✅ |
-| `just dev-web` | Run the web client dev server | F0.5 |
+| `just dev-web` | Run the web client dev server | F0.5 ✅ |
 | `just dev-android` | Build/install the Android app | F0.10 |
 | `just db-up` / `just db-down` | Start/stop local Postgres + backend via Compose | F0.2 ✅ |
 | `just golden` | Regenerate cube-core golden vectors | F1.4 |
@@ -104,7 +104,9 @@ One fragment at a time, in the order of section 9 of the product spec. Rules:
 - **F0.3** OpenAPI contract v0 + generated Go/Kotlin/TypeScript clients — done.
 - **F0.4** CI (`.github/workflows/ci.yml`: scaffold, Go, TypeScript, Kotlin,
   contract freshness, bundle-size) — done.
-- Next: **F0.5** Web scaffold (Vite, React, strict TS, Tailwind v4,
-  shadcn/ui, design tokens, fonts).
+- **F0.5** Web scaffold (Vite, React, strict TS, Tailwind v4, shadcn/ui,
+  design tokens, self-hosted fonts, theme toggle) — done.
+- Next: **F0.6** Waitlist API (contract exists since F0.3; Postgres
+  migration, Go handler, rate limit).
 
 Full fragment list: section 9 of the product spec.

@@ -106,7 +106,10 @@ One fragment at a time, in the order of section 9 of the product spec. Rules:
   contract freshness, bundle-size) — done.
 - **F0.5** Web scaffold (Vite, React, strict TS, Tailwind v4, shadcn/ui,
   design tokens, self-hosted fonts, theme toggle) — done.
-- Next: **F0.6** Waitlist API (contract exists since F0.3; Postgres
-  migration, Go handler, rate limit).
+- **F0.6** Waitlist API (Postgres migration, Go handler, rate limit) — done.
+- **F0.7** Landing page (Reference A hero + LiquidButton, shared signup
+  modal, core loop/features/CTA/footer) — done.
+- Next: **F0.8** Hero background (raw WebGL2 shader, `uBlock`, WebP poster,
+  measured budgets).
 
 Full fragment list: section 9 of the product spec.

@@ -96,12 +96,23 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
   - [x] Tests: new / duplicate / invalid (+ malformed, rate-limited)
   - [x] Integration test vs real Postgres (migration + insert + duplicate)
   - [x] Verify: TS client compiles, full `just check`
-- [ ] **F0.7 Landing page** — hero (Reference A layout + LiquidButton,
+- [x] **F0.7 Landing page** — hero (Reference A layout + LiquidButton,
   Reference B shader background), copy placeholders as briefed, four-step
   core loop, feature highlights, final CTA, footer. One shared signup modal
   (inline validation, success state, keyboard + screen-reader support).
   Done when: signup works end to end against the local API, dark and light.
-  After: web-design-guidelines audit, fix findings.
+  After: web-design-guidelines audit, fix findings. ✅ verified 2026-11-26:
+  full browser-path E2E against real API + Postgres (preflight + new 200 /
+  duplicate 200 / invalid 400), 14 web unit tests, `just check` green
+  (88.2 KB gz bundle). Audit fixes: dialog focus moved to email field,
+  reduced-motion on the status ping. Visual dark/light rendering not
+  screenshot-verified (no browser here) — manual check recommended.
+  - [x] LiquidButton (Reference A, fixed: one global GlassFilter, token colors)
+  - [x] Waitlist client wrapper on generated TS client + unit tests
+  - [x] Shared signup modal (native dialog, inline validation, success state)
+  - [x] Hero (dark both themes) + core loop + features + final CTA + footer
+  - [x] End-to-end vs local API (new/duplicate/invalid) in dark + light structure
+  - [x] web-design-guidelines audit (ux-designer workflow) + fixes
 - [ ] **F0.8 Hero background** — raw WebGL2 (no Three.js), `uBlock`
   uniform, cube-face token colors via uniforms, 0.75 render scale with
   adaptive drop, DPR ≤ 1.5, `antialias: false`, paused off-screen/hidden,

@@ -16,6 +16,9 @@ import (
 // handler (F0.6); when nil the route is not registered.
 type Options struct {
 	Waitlist http.Handler
+	// CORSAllowedOrigins lists browser origins allowed to call the API
+	// (F0.7). Empty disables CORS headers.
+	CORSAllowedOrigins []string
 }
 
 // New returns the root HTTP handler with routes and middleware applied.
@@ -26,7 +29,7 @@ func New(logger *slog.Logger, opts Options) http.Handler {
 	if opts.Waitlist != nil {
 		mux.Handle("POST /waitlist", opts.Waitlist)
 	}
-	return logRequests(logger, mux)
+	return logRequests(logger, cors(opts.CORSAllowedOrigins, mux))
 }
 
 func healthz(w http.ResponseWriter, r *http.Request) {

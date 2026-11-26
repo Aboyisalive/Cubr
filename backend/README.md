@@ -40,6 +40,9 @@ Routes so far: `GET /healthz`, `GET /readyz` → `{"service":"cubr-api","status"
 - Integration test (`TestPostgresWaitlistIntegration`) runs the migration
   and duplicate/index behavior against a real Postgres when
   `TEST_DATABASE_URL` is set (CI provides one).
+- Browser callers (F0.7): CORS middleware allows `CORS_ALLOWED_ORIGINS`
+  (default the local Vite dev/preview origins) with preflight handling;
+  non-browser clients are unaffected.
 
 Run it:
 

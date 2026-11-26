@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -26,6 +27,8 @@ type Config struct {
 	// Waitlist rate limiting (F0.6): requests per minute per IP, plus burst.
 	WaitlistRatePerMinute int
 	WaitlistRateBurst     int
+	// CORSAllowedOrigins lists browser origins allowed to call the API (F0.7).
+	CORSAllowedOrigins []string
 }
 
 // Addr returns the listen address for the HTTP server.
@@ -47,6 +50,7 @@ func LoadFrom(getenv func(string) string) (Config, error) {
 		ShutdownTimeout:       10 * time.Second,
 		WaitlistRatePerMinute: 10,
 		WaitlistRateBurst:     5,
+		CORSAllowedOrigins:    []string{"http://localhost:5173", "http://localhost:4173"},
 	}
 
 	if raw := getenv("PORT"); raw != "" {
@@ -63,6 +67,16 @@ func LoadFrom(getenv func(string) string) (Config, error) {
 			return Config{}, fmt.Errorf("%w: LOG_LEVEL %q: %v", ErrInvalidConfig, raw, err)
 		}
 		cfg.LogLevel = level
+	}
+
+	if raw := getenv("CORS_ALLOWED_ORIGINS"); raw != "" {
+		var origins []string
+		for _, part := range strings.Split(raw, ",") {
+			if origin := strings.TrimSpace(part); origin != "" {
+				origins = append(origins, origin)
+			}
+		}
+		cfg.CORSAllowedOrigins = origins
 	}
 
 	for _, item := range []struct {

@@ -56,7 +56,7 @@ func run() error {
 
 	server := &http.Server{
 		Addr:              cfg.Addr(),
-		Handler:           httpapi.New(logger, httpapi.Options{Waitlist: waitlistHandler}),
+		Handler:           httpapi.New(logger, httpapi.Options{Waitlist: waitlistHandler, CORSAllowedOrigins: cfg.CORSAllowedOrigins}),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 

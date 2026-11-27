@@ -140,10 +140,16 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done (only when its
 - [!] **F0.9 Waitlist import** — BLOCKED: waiting for the exported waitlist
   emails to be handed over. Done when: exported emails load with no
   duplicates.
-- [ ] **F0.10 KMP app scaffold** — Compose Multiplatform, theme tokens
+- [~] **F0.10 KMP app scaffold** — Compose Multiplatform, theme tokens
   matching web, bottom bar (Home, Learn, central Scan, Timer, Algorithms),
   placeholder pages only.
   Done when: app launches on Android with themed placeholders, dark + light.
+  - [ ] Install Android SDK (cmdline tools, platform, build-tools, emulator)
+  - [ ] KMP project in `android/` (android + desktop-JVM targets; iOS after F0.12)
+  - [ ] Theme tokens matching web (colors/type) + dark/light with toggle
+  - [ ] Bottom bar: Home, Learn, central Scan button, Timer, Algorithms
+  - [ ] Placeholder pages per tab (Scan as an action page)
+  - [ ] Tests: token tests; verify assembleDebug + launch (emulator/device)
 - [ ] **F0.11 Filament spike (Android)** — rotating 26-cubie cube,
   cube-face colors.
   Done when: holds 60 fps on a mid-range device; measured fps, device and

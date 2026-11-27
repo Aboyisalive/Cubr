@@ -42,11 +42,12 @@ build:
     cd shared/api/gen/typescript && npm run build
     cd web && npm run build
 
-# Run test suites that exist so far (backend F0.2, generated Go F0.3, web F0.5)
+# Run test suites that exist so far (backend F0.2, generated Go F0.3, web F0.5, android F0.10)
 test:
     cd backend && go test ./...
     cd shared/api/gen/go && go test ./...
     cd web && npm test
+    cd android && gradle :composeApp:desktopTest
 
 # Lint what exists so far (Go F0.2/F0.3, TypeScript F0.3, web F0.5)
 lint:
@@ -85,9 +86,9 @@ dev-backend:
 dev-web:
     cd web && npm run dev
 
-# Build/install the Android app (F0.10)
+# Build the Android app debug APK (F0.10)
 dev-android:
-    @echo "not implemented yet: dev-android -> F0.10 (KMP app scaffold)" >&2; exit 2
+    cd android && gradle :androidApp:assembleDebug
 
 # Start local Postgres + backend via Docker Compose (F0.2)
 db-up:
